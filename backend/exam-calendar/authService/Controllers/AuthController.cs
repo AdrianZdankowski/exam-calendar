@@ -18,7 +18,7 @@ namespace authService.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (await authService.registerAsync(request) is false)
+            if (await authService.RegisterAsync(request) is false)
             {
                 return BadRequest("User already exists!");
             }
@@ -34,7 +34,7 @@ namespace authService.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await authService.loginAsync(request);
+            var result = await authService.LoginAsync(request);
 
             if (result == null)
             {

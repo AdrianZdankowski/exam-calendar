@@ -5,10 +5,12 @@ namespace authService.Services
 {
     public interface IAuthService
     {
-        Task<bool> registerAsync(UserDto userDto);
+        Task<bool> RegisterAsync(UserDto userDto);
 
         Task<List<User>> GetAllUsersAsync();
 
-        Task<LoginResponse?> loginAsync(UserDto userDto);
+        Task<LoginResponse?> LoginAsync(UserDto userDto);
+
+        string GenerateToken(User user);
     }
 }
