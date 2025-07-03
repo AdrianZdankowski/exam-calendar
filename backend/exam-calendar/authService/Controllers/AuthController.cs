@@ -1,6 +1,7 @@
 ﻿using authService.DTO;
 using authService.Entities;
 using authService.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,7 +46,7 @@ namespace authService.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet("users")]
         public async Task<ActionResult<List<User>>> getUsers()
         {
