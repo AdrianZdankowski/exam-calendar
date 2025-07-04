@@ -53,5 +53,12 @@ namespace authService.Controllers
             var users = await authService.GetAllUsersAsync();
             return Ok(users);
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin")]
+        public async Task<ActionResult<string>> adminTest()
+        {
+            return Ok("You are a user with admin role!");
+        }
     }
 }
