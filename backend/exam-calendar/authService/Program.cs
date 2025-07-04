@@ -34,6 +34,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettingss.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddUserSecrets<Program>()
+    .AddEnvironmentVariables();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
