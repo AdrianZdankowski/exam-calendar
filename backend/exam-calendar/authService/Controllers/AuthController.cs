@@ -27,7 +27,7 @@ namespace authService.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> login(UserDto request)
+        public async Task<ActionResult<LoginResponse>> login(UserDto request)
         {
             if (!ModelState.IsValid)
             {
@@ -44,6 +44,14 @@ namespace authService.Controllers
             return Ok(result);
         }
 
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<LoginResponse>> RefreshToken(RefreshTokenRequest request)
+        {
+            var result = await authService.RefreshTokensAsync(request);
+            if (result is null || result.AccessToken is null || result.RefreshToken is null) return Unauthorized("Invalid refesh token");
+
+            return Ok(result);
+        }
 
         [Authorize]
         [HttpGet("users")]

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace authService.Services
@@ -40,11 +41,33 @@ namespace authService.Services
                 .VerifyHashedPassword(user, user.PasswordHash, request.Password) == PasswordVerificationResult.Failed;
 
             if (passwordInvalid) return null;
+            return await CreateTokenResponse(user);
 
-            var token = GenerateToken(user);
+        }
 
-            return new LoginResponse { token = token };
-            
+        private async Task<LoginResponse> CreateTokenResponse(User user)
+        {
+            return new LoginResponse
+            {
+                AccessToken = GenerateToken(user),
+                RefreshToken = await GenerateAndSaveRefreshTokenAsync(user)
+            };
+        }
+
+        public async Task<LoginResponse?> RefreshTokensAsync(RefreshTokenRequest request)
+        {
+            var user = await ValidateRefreshTokenAsync(request.Id, request.RefreshToken);
+            if (user is null) return null;
+
+            return await CreateTokenResponse(user);
+        }
+
+        private async Task<User?> ValidateRefreshTokenAsync(int id, string refreshToken)
+        {
+            var user = await context.Users.FindAsync(id);
+            if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow) return null;
+
+            return user;
         }
 
         public string GenerateToken(User user)
@@ -70,6 +93,24 @@ namespace authService.Services
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private string GenerateRefreshToken()
+        {
+            var randomSequence = new byte[32];
+            using var randomNumberGenerator = RandomNumberGenerator.Create();
+            randomNumberGenerator.GetBytes(randomSequence);
+            return Convert.ToBase64String(randomSequence);
+        }
+
+        private async Task<string> GenerateAndSaveRefreshTokenAsync(User user)
+        { 
+            var refreshToken = GenerateRefreshToken();
+            user.RefreshToken = refreshToken;
+            // Refresh token is valid for 7 days
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            await context.SaveChangesAsync();
+            return refreshToken;
         }
 
         public async Task<List<User>> GetAllUsersAsync()

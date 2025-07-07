@@ -11,6 +11,8 @@ namespace authService.Services
 
         Task<LoginResponse?> LoginAsync(UserDto userDto);
 
+        Task<LoginResponse?> RefreshTokensAsync(RefreshTokenRequest request);
+
         string GenerateToken(User user);
     }
 }
