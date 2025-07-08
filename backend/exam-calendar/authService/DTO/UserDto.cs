@@ -6,7 +6,7 @@ namespace authService.DTO
     {
         [Required(ErrorMessage = "Username is required!")]
         [MaxLength(32, ErrorMessage = "Username cannot exceed 32 characters!")]
-        [RegularExpression(@"^[a-zA-Z0-9]+$")]
+        [RegularExpression(@"^[a-zA-Z0-9._-]{3,32}$")]
         public string Username { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Password is required!")]
