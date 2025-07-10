@@ -1,0 +1,22 @@
+header {
+    background-color: #5352ed;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+}
+
+nav p {
+    padding-right: 1rem;
+}
+
+
