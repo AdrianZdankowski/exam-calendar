@@ -9,9 +9,6 @@ interface LocationState {
 
 const LoginPage = () => {
 
-    const { state } = useLocation() as { state?: LocationState };
-    const navigate = useNavigate();
-
     const USERNAME_REGEX = /^[a-zA-Z0-9._-]{3,32}$/;
     const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/;
 
@@ -19,6 +16,9 @@ const LoginPage = () => {
     const PASSWORD_ERROR_TEXT = "Password has to be at least 8 character long, contain a number and a special character";
     const LOGIN_ERROR_TEXT = "Wrong username or password given!";
     const REGISTER_SUCCESS = "Account created! Sign in below.";
+
+    const { state } = useLocation() as { state?: LocationState };
+    const navigate = useNavigate();
 
     const [showAlert, setShowAlert] = useState<boolean>(
         () => !!state?.registered
@@ -52,6 +52,10 @@ const LoginPage = () => {
        }
 
        console.log(`Username: ${username} Password: ${password}`);
+
+       navigate('/', {
+        replace: true
+       })
 
     }
 
