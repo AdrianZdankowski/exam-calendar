@@ -1,6 +1,8 @@
 import { Alert, Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import api from "../api/axios";
+import { useAuth } from "../contexts/AuthContext";
 
 interface LocationState {
     registered?: boolean;
@@ -20,6 +22,8 @@ const LoginPage = () => {
     const { state } = useLocation() as { state?: LocationState };
     const navigate = useNavigate();
 
+    const { login } = useAuth();
+
     const [showAlert, setShowAlert] = useState<boolean>(
         () => !!state?.registered
     );
@@ -37,7 +41,7 @@ const LoginPage = () => {
     const [usernameError,setUsernameError] = useState('');
     const [passwordError,setPasswordError] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
        const usernameErr = USERNAME_REGEX.test(username) ? '' : USERNAME_ERROR_TEXT;
@@ -51,12 +55,17 @@ const LoginPage = () => {
         return;
        }
 
-       console.log(`Username: ${username} Password: ${password}`);
-
-       navigate('/', {
-        replace: true
-       })
-
+       try {
+        const result = await api.post('/Auth/login', {username, password});
+        const {accessToken, refreshToken} = result.data;
+        login(accessToken, refreshToken);
+        navigate('/', {
+            replace: true
+        })
+       } 
+       catch (error) {
+        console.error(error);
+       }
     }
 
     return (
