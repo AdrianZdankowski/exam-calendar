@@ -53,7 +53,7 @@ builder.Configuration
 
 var app = builder.Build();
 
-app.UseCors("AllowFronted");
+app.UseCors("AllowFrontend");
 
 using (var scope = app.Services.CreateScope())
 {

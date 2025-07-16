@@ -1,6 +1,7 @@
 import { Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import api from '../api/axios';
 
 const RegisterPage = () => {
 
@@ -21,7 +22,7 @@ const RegisterPage = () => {
 
     const navigate = useNavigate();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
        const usernameErr = USERNAME_REGEX.test(username) ? '' : USERNAME_ERROR_TEXT;
@@ -34,14 +35,19 @@ const RegisterPage = () => {
 
        if (usernameErr.length != 0 || passwordErr.length != 0 || repeatPasswordErr.length != 0) return;
 
-       console.log(`Username: ${username} Password: ${password} RPass: ${repeatPassword}`);
-
-       navigate('/login', {
-        replace: true,
-        state: {
-            registered: true,
-        }
-       });
+       try {
+        const result = await api.post('/Auth/register', {username, password});
+        console.log(result.data);
+        navigate('/login', {
+            replace: true,
+            state: {
+                registered: true,
+            }
+            });
+       }
+       catch (error) {
+        console.error(error);
+       }
     };
 
     return (
