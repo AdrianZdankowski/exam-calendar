@@ -9,9 +9,9 @@ namespace authService.Services
 
         Task<List<User>> GetAllUsersAsync();
 
-        Task<LoginResponse?> LoginAsync(UserDto userDto);
+        Task<TokenResponse?> LoginAsync(UserDto userDto);
 
-        Task<LoginResponse?> RefreshTokensAsync(RefreshTokenRequest request);
+        Task<TokenResponse?> RefreshTokensAsync(RefreshTokenRequest request);
 
         string GenerateToken(User user);
     }

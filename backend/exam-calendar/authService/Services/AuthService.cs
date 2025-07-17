@@ -32,7 +32,7 @@ namespace authService.Services
             return true;
         }
 
-        public async Task<LoginResponse?> LoginAsync(UserDto request)
+        public async Task<TokenResponse?> LoginAsync(UserDto request)
         {
             var user = await context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (user == null) return null;
@@ -45,27 +45,27 @@ namespace authService.Services
 
         }
 
-        private async Task<LoginResponse> CreateTokenResponse(User user)
+        private async Task<TokenResponse> CreateTokenResponse(User user)
         {
-            return new LoginResponse
+            return new TokenResponse
             {
                 AccessToken = GenerateToken(user),
                 RefreshToken = await GenerateAndSaveRefreshTokenAsync(user)
             };
         }
 
-        public async Task<LoginResponse?> RefreshTokensAsync(RefreshTokenRequest request)
+        public async Task<TokenResponse?> RefreshTokensAsync(RefreshTokenRequest request)
         {
-            var user = await ValidateRefreshTokenAsync(request.Id, request.RefreshToken);
+            var user = await ValidateRefreshTokenAsync(request.RefreshToken);
             if (user is null) return null;
 
             return await CreateTokenResponse(user);
         }
 
-        private async Task<User?> ValidateRefreshTokenAsync(int id, string refreshToken)
+        private async Task<User?> ValidateRefreshTokenAsync(string refreshToken)
         {
-            var user = await context.Users.FindAsync(id);
-            if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow) return null;
+            var user = await context.Users.FirstOrDefaultAsync<User>(u => u.RefreshToken == refreshToken);
+            if (user is null || user.RefreshTokenExpiryTime <= DateTime.UtcNow) return null;
 
             return user;
         }

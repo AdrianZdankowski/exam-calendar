@@ -2,7 +2,6 @@
 {
     public class RefreshTokenRequest
     {
-        public int Id { get; set; }
-        public required string RefreshToken { get; set; }
+       public required string RefreshToken { get; set; }
     }
 }
