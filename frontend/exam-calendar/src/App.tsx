@@ -7,6 +7,7 @@ import RegisterPage from "./pages/RegisterPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import UserPage from "./pages/UserPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 
 function App() {
   return (
@@ -18,9 +19,9 @@ function App() {
           <Route path="login" element = {<LoginPage/>}/>
           <Route path="register" element = {<RegisterPage/>}/>
           <Route path="users" element = {
-            <ProtectedRoute>
+            <ProtectedAdminRoute>
               <UserPage/>
-            </ProtectedRoute>
+            </ProtectedAdminRoute>
           }
           />
           </Route>
