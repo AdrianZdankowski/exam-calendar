@@ -14,5 +14,7 @@ namespace authService.Services
         Task<TokenResponse?> RefreshTokensAsync(RefreshTokenRequest request);
 
         string GenerateToken(User user);
+
+        Task<bool> LogoutAsync(string jwtToken);
     }
 }

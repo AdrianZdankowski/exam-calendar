@@ -54,6 +54,24 @@ namespace authService.Services
             };
         }
 
+        public async Task<bool> LogoutAsync(string jwtToken)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(jwtToken);
+
+            int userId = int.Parse(jwt.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value);
+
+            var user = await context.Users.FindAsync(userId);
+            if (user == null) return false;
+
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = null;
+
+            await context.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<TokenResponse?> RefreshTokensAsync(RefreshTokenRequest request)
         {
             var user = await ValidateRefreshTokenAsync(request.RefreshToken);

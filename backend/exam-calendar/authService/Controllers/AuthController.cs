@@ -44,6 +44,23 @@ namespace authService.Controllers
             return Ok(result);
         }
 
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<ActionResult<string>> logout()
+        {
+            var authHeader = HttpContext.Request.Headers.Authorization.ToString();
+
+            if (string.IsNullOrEmpty(authHeader) && !authHeader.StartsWith("Bearer", StringComparison.OrdinalIgnoreCase))
+                return Unauthorized();
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+
+            bool result = await authService.LogoutAsync(token);
+
+            if (!result) return NotFound();
+            return Ok("User logged out successfully");
+        }
+
         [HttpPost("refresh-token")]
         public async Task<ActionResult<TokenResponse>> RefreshToken(RefreshTokenRequest request)
         {
