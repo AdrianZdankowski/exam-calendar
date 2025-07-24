@@ -10,17 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:5173")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-        });
-});
-
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddControllers();
@@ -52,8 +41,6 @@ builder.Configuration
     .AddEnvironmentVariables();
 
 var app = builder.Build();
-
-app.UseCors("AllowFrontend");
 
 using (var scope = app.Services.CreateScope())
 {

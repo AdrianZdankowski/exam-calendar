@@ -36,7 +36,7 @@ const RegisterPage = () => {
        if (usernameErr.length != 0 || passwordErr.length != 0 || repeatPasswordErr.length != 0) return;
 
        try {
-        await api.post('/Auth/register', {username, password});
+        await api.post('/auth/register', {username, password});
         navigate('/login', {
             replace: true,
             state: {
