@@ -1,0 +1,9 @@
+@ApiGateway_HostAddress = http://localhost:5282
+
+POST {{ApiGateway_HostAddress}}/api/auth/login
+content-type: application/json
+
+{
+  "username": "Janek",
+  "password": "Test@123"
+}

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getAccessToken, getRefreshToken, deleteTokens, setTokens } from "../lib/auth";
 
-const BASE_URL = 'http://localhost:5280/api';
+const BASE_URL = 'http://localhost:5282/api';
 
 const api = axios.create({
     baseURL: BASE_URL
@@ -16,7 +16,7 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  res => res,
+  result => result,
   async (error) => {
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -28,7 +28,7 @@ api.interceptors.response.use(
         return Promise.reject(error);
       }
       try {
-        const res = await axios.post(`${BASE_URL}/Auth/refresh-token`, {
+        const res = await axios.post(`${BASE_URL}/auth/refresh-token`, {
           refreshToken
         });
         const newAccessToken = res.data.accessToken;
