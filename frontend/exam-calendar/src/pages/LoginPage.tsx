@@ -56,9 +56,10 @@ const LoginPage = () => {
        }
 
        try {
-        const result = await api.post('/auth/login', {username, password});
-        const {accessToken, refreshToken} = result.data;
-        login(accessToken, refreshToken);
+        const result = await api.post('/auth/login', {username, password}, {withCredentials: true});
+        const {accessToken} = result.data;
+        const fakeToken = "lalala";
+        login(accessToken, fakeToken);
         navigate('/', {
             replace: true
         })

@@ -41,7 +41,14 @@ namespace authService.Controllers
                 return BadRequest("User not found.");
             }
 
-            return Ok(result);
+            Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(7)
+            });
+
+            return Ok(new TokenResponse { AccessToken = result.AccessToken});
         }
 
         [Authorize]
@@ -62,10 +69,14 @@ namespace authService.Controllers
         }
 
         [HttpPost("refresh-token")]
-        public async Task<ActionResult<TokenResponse>> RefreshToken(RefreshTokenRequest request)
+        public async Task<ActionResult<TokenResponse>> RefreshToken()
         {
-            var result = await authService.RefreshTokensAsync(request);
-            if (result is null || result.AccessToken is null || result.RefreshToken is null) return Unauthorized("Invalid refesh token");
+            var refreshToken = Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(refreshToken)) return BadRequest();
+
+            var result = await authService.RefreshTokensAsync(refreshToken);
+            if (result == null) return Unauthorized("Invalid refresh token");
 
             return Ok(result);
         }

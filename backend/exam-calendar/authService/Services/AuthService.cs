@@ -1,6 +1,7 @@
 ﻿using authService.Data;
 using authService.DTO;
 using authService.Entities;
+using authService.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -32,7 +33,7 @@ namespace authService.Services
             return true;
         }
 
-        public async Task<TokenResponse?> LoginAsync(UserDto request)
+        public async Task<TokenData?> LoginAsync(UserDto request)
         {
             var user = await context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (user == null) return null;
@@ -41,13 +42,13 @@ namespace authService.Services
                 .VerifyHashedPassword(user, user.PasswordHash, request.Password) == PasswordVerificationResult.Failed;
 
             if (passwordInvalid) return null;
-            return await CreateTokenResponse(user);
+            return await CreateTokenDataAsync(user);
 
         }
 
-        private async Task<TokenResponse> CreateTokenResponse(User user)
+        private async Task<TokenData> CreateTokenDataAsync(User user)
         {
-            return new TokenResponse
+            return new TokenData
             {
                 AccessToken = GenerateToken(user),
                 RefreshToken = await GenerateAndSaveRefreshTokenAsync(user)
@@ -72,12 +73,12 @@ namespace authService.Services
             return true;
         }
 
-        public async Task<TokenResponse?> RefreshTokensAsync(RefreshTokenRequest request)
+        public async Task<TokenResponse?> RefreshTokensAsync(string refreshToken)
         {
-            var user = await ValidateRefreshTokenAsync(request.RefreshToken);
+            var user = await ValidateRefreshTokenAsync(refreshToken);
             if (user is null) return null;
 
-            return await CreateTokenResponse(user);
+            return new TokenResponse { AccessToken = GenerateToken(user) };
         }
 
         private async Task<User?> ValidateRefreshTokenAsync(string refreshToken)
