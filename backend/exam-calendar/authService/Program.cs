@@ -16,6 +16,17 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+//builder.Services.AddCors(options =>
+//{
+//    options.AddDefaultPolicy(policy =>
+//    {
+//        policy.WithOrigins("http://localhost:5173")
+//        .AllowAnyHeader()
+//        .AllowAnyMethod()
+//        .AllowCredentials();
+//    });
+//});
+
 builder.Services.AddDbContext<AuthDbContext>(options => options.UseInMemoryDatabase("authDb"));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -59,6 +70,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+//app.UseCors();
 
 app.MapControllers();
 

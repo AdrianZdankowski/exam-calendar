@@ -57,8 +57,8 @@ const LoginPage = () => {
 
        try {
         const result = await api.post('/auth/login', {username, password});
-        const {accessToken, refreshToken} = result.data;
-        login(accessToken, refreshToken);
+        const {accessToken} = result.data;
+        login(accessToken);
         navigate('/', {
             replace: true
         })

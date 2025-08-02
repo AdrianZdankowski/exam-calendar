@@ -1,5 +1,6 @@
 ﻿using authService.DTO;
 using authService.Entities;
+using authService.Models;
 
 namespace authService.Services
 {
@@ -9,9 +10,9 @@ namespace authService.Services
 
         Task<List<User>> GetAllUsersAsync();
 
-        Task<TokenResponse?> LoginAsync(UserDto userDto);
+        Task<TokenData?> LoginAsync(UserDto userDto);
 
-        Task<TokenResponse?> RefreshTokensAsync(RefreshTokenRequest request);
+        Task<TokenResponse?> RefreshTokensAsync(string refreshToken);
 
         string GenerateToken(User user);
 

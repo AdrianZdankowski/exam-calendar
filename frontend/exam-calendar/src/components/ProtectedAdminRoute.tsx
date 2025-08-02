@@ -7,14 +7,16 @@ interface ProtectedRouteProps {
 };
 
 const ProtectedAdminRoute = ({ children } : ProtectedRouteProps) => {
-    const { isAuthenticated, userRole } = useAuth();
+    const { isAuthenticated, isRefreshing, userRole } = useAuth();
+
+    if (!isRefreshing) return null;
 
     if (!isAuthenticated) return <Navigate to="/login"/>;
     
     // Change to Unauthorized component
     if (userRole !== "Admin") return <Navigate to="/register"/>;
 
-    return <>{children};</>
+    return <>{children}</>
 }
 
 export default ProtectedAdminRoute;
