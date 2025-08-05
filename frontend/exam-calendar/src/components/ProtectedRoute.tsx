@@ -9,9 +9,9 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children } : ProtectedRouteProps) => {
     const { isAuthenticated, isRefreshing } = useAuth();
 
-    if (!isRefreshing) return null;
+    if (isRefreshing) return null;
 
-    return isAuthenticated ? <>{children}</> : <Navigate to="/login"/>;
+    return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace/>;
 }
 
 export default ProtectedRoute;
