@@ -7,3 +7,7 @@ content-type: application/json
   "username": "Janek",
   "password": "Test@123"
 }
+
+###
+GET {{ApiGateway_HostAddress}}/api/task
+Accept: application/json
