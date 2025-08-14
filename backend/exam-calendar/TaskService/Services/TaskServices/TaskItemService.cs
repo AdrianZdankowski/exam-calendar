@@ -64,6 +64,32 @@ namespace TaskService.Services.TaskServices
             return taskDtos;
         }
 
+        public async Task<List<TaskDto>> GetUserTasksForMonthAsync(int userId, int year, int month)
+        {
+            var tasks = await context.Tasks
+                .Include(t => t.Tags)
+                .Where (t => t.UserId == userId
+                    && t.TaskDate.Year == year
+                    && t.TaskDate.Month == month)
+                .ToListAsync();
+
+            var taskDtos = tasks.Select(task => new TaskDto
+            {
+                Id = task.Id,
+                UserId = task.UserId,
+                TaskDate = task.TaskDate,
+                TaskTime = task.TaskTime,
+                Description = task.Description,
+                Tags = task.Tags.Select(tag => new TagDto
+                {
+                    Id = tag.Id,
+                    Name = tag.Name,
+                }).ToList()
+            }).ToList();
+
+            return taskDtos;
+        }
+
         public async Task<TaskDto> GetTaskAsync(int id)
         {
             var task = await context.Tasks

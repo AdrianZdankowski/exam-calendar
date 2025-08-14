@@ -11,6 +11,8 @@ namespace TaskService.Services.TaskServices
 
         Task<List<TaskDto>> GetAllTasksByUserIdAsync(int userId);
 
+        Task<List<TaskDto>> GetUserTasksForMonthAsync(int userId, int year, int month);
+
         Task<bool> DeleteTaskAsync(int id);
     }
 }

@@ -24,7 +24,7 @@ namespace TaskService.Controllers
             return Ok("Task has been added");
         }
 
-        [HttpGet("id/{taskId}")]
+        [HttpGet("id/{taskId:int}")]
         public async Task<ActionResult<TaskDto>> GetTaskById(int taskId)
         {
             var taskDto = await taskService.GetTaskAsync(taskId);
@@ -34,7 +34,7 @@ namespace TaskService.Controllers
             return Ok(taskDto);
         }
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("user/{userId:int}")]
         public async Task<ActionResult<List<TaskDto>>> GetAllUserTasks(int userId)
         {
             var tasks = await taskService.GetAllTasksByUserIdAsync(userId);
@@ -44,7 +44,19 @@ namespace TaskService.Controllers
             return Ok(tasks);
         }
 
-        [HttpDelete("{taskId}")]
+        [HttpGet("user/{userId:int}/date/{year:int}/{month:int}")]
+        public async Task<ActionResult<List<TaskDto>>> GetUserTasksByMonth(int userId, int year, int month)
+        {
+            var tasks = await taskService.GetUserTasksForMonthAsync(userId, year, month);
+
+            if (month < 1 || month > 12) return BadRequest("Month must be between 1 and 12");
+
+            if (tasks == null) return BadRequest("Wrong user id, year or month");
+
+            return Ok(tasks);
+        }
+
+        [HttpDelete("{taskId:int}")]
         public async Task<ActionResult<string>> DeleteTask(int taskId)
         {
             if (await taskService.DeleteTaskAsync(taskId)) return Ok($"Task with id: {taskId} was deleted");
