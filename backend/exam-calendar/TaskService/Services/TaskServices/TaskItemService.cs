@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using TaskService.Data;
 using TaskService.DTO;
 using TaskService.Entities;
@@ -30,9 +32,14 @@ namespace TaskService.Services.TaskServices
             return task;
         }
 
-        public async Task<bool> DeleteTaskAsync(int id)
+        public async Task<bool> DeleteTaskAsync(string token, int id)
         {
-            var task = await context.Tasks.FirstOrDefaultAsync(t => t.Id == id);
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(token);
+
+            int userId = int.Parse(jwt.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value);
+
+            var task = await context.Tasks.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
             if (task == null) return false;
 
             context.Tasks.Remove(task);
@@ -40,32 +47,47 @@ namespace TaskService.Services.TaskServices
             return true;
         }
 
-        public async Task<List<TaskDto>> GetAllTasksByUserIdAsync(int userId)
+        public async Task<List<TaskDto>> GetAllTasksByUserIdAsync(string token)
         {
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(token);
+
+            int userId = int.Parse(jwt.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value);
+
             var tasks = await context.Tasks
                 .Include(t => t.Tags)
                 .Where(t => t.UserId == userId)
-                .ToListAsync(); 
+                .ToListAsync();
 
-            var taskDtos = tasks.Select(task => new TaskDto
+            if (tasks.Any())
             {
-                Id = task.Id,
-                UserId = task.UserId,
-                TaskDate = task.TaskDate,
-                TaskTime = task.TaskTime,
-                Description = task.Description,
-                Tags = task.Tags.Select(tag => new TagDto
+                var taskDtos = tasks.Select(task => new TaskDto
                 {
-                    Id = tag.Id,
-                    Name = tag.Name,
-                }).ToList()
-            }).ToList();
+                    Id = task.Id,
+                    UserId = task.UserId,
+                    TaskDate = task.TaskDate,
+                    TaskTime = task.TaskTime,
+                    Description = task.Description,
+                    Tags = task.Tags.Select(tag => new TagDto
+                    {
+                        Id = tag.Id,
+                        Name = tag.Name,
+                    }).ToList()
+                }).ToList();
 
-            return taskDtos;
+                return taskDtos;
+            }
+            return null;
         }
 
-        public async Task<List<TaskDto>> GetUserTasksForMonthAsync(int userId, int year, int month)
+        public async Task<List<TaskDto>> GetUserTasksByMonthAsync(string token, int year, int month)
         {
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(token);
+
+            int userId = int.Parse(jwt.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value);
+
             var tasks = await context.Tasks
                 .Include(t => t.Tags)
                 .Where (t => t.UserId == userId
@@ -73,21 +95,25 @@ namespace TaskService.Services.TaskServices
                     && t.TaskDate.Month == month)
                 .ToListAsync();
 
-            var taskDtos = tasks.Select(task => new TaskDto
+            if (tasks.Any())
             {
-                Id = task.Id,
-                UserId = task.UserId,
-                TaskDate = task.TaskDate,
-                TaskTime = task.TaskTime,
-                Description = task.Description,
-                Tags = task.Tags.Select(tag => new TagDto
+                var taskDtos = tasks.Select(task => new TaskDto
                 {
-                    Id = tag.Id,
-                    Name = tag.Name,
-                }).ToList()
-            }).ToList();
+                    Id = task.Id,
+                    UserId = task.UserId,
+                    TaskDate = task.TaskDate,
+                    TaskTime = task.TaskTime,
+                    Description = task.Description,
+                    Tags = task.Tags.Select(tag => new TagDto
+                    {
+                        Id = tag.Id,
+                        Name = tag.Name,
+                    }).ToList()
+                }).ToList();
 
-            return taskDtos;
+                return taskDtos;
+            }
+            return null;
         }
 
         public async Task<TaskDto> GetTaskAsync(int id)

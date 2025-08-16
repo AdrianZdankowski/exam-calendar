@@ -9,10 +9,10 @@ namespace TaskService.Services.TaskServices
 
         Task<TaskDto> GetTaskAsync(int id);
 
-        Task<List<TaskDto>> GetAllTasksByUserIdAsync(int userId);
+        Task<List<TaskDto>> GetAllTasksByUserIdAsync(string token);
 
-        Task<List<TaskDto>> GetUserTasksForMonthAsync(int userId, int year, int month);
+        Task<List<TaskDto>> GetUserTasksByMonthAsync(string token, int year, int month);
 
-        Task<bool> DeleteTaskAsync(int id);
+        Task<bool> DeleteTaskAsync(string token, int id);
     }
 }

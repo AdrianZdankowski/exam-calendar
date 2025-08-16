@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskService.DTO;
 using TaskService.Services.TagServices;
@@ -9,6 +9,7 @@ namespace TaskService.Controllers
     [ApiController]
     public class TagController(ITagService tagService) : ControllerBase
     {
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<string>> AddTag(TagPostDto request)
         {
@@ -25,12 +26,14 @@ namespace TaskService.Controllers
             return Ok("Tag created successfully");
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<List<TagDto>> GetAllTags()
         {
             return await tagService.GetAllTagsAsync();
         }
 
+        [Authorize]
         [HttpGet("{TagId}")]
         public async Task<TagDto> GetTagById(int TagId)
         {
