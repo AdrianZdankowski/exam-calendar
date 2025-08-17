@@ -34,10 +34,7 @@ namespace TaskService.Services.TaskServices
 
         public async Task<bool> DeleteTaskAsync(string token, int id)
         {
-            var handler = new JwtSecurityTokenHandler();
-            var jwt = handler.ReadJwtToken(token);
-
-            int userId = int.Parse(jwt.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value);
+            int userId = ExtractUserIdFromJwt(token);
 
             var task = await context.Tasks.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
             if (task == null) return false;
@@ -49,11 +46,7 @@ namespace TaskService.Services.TaskServices
 
         public async Task<List<TaskDto>> GetAllTasksByUserIdAsync(string token)
         {
-
-            var handler = new JwtSecurityTokenHandler();
-            var jwt = handler.ReadJwtToken(token);
-
-            int userId = int.Parse(jwt.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value);
+            int userId = ExtractUserIdFromJwt(token);
 
             var tasks = await context.Tasks
                 .Include(t => t.Tags)
@@ -83,10 +76,7 @@ namespace TaskService.Services.TaskServices
 
         public async Task<List<TaskDto>> GetUserTasksByMonthAsync(string token, int year, int month)
         {
-            var handler = new JwtSecurityTokenHandler();
-            var jwt = handler.ReadJwtToken(token);
-
-            int userId = int.Parse(jwt.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value);
+            int userId = ExtractUserIdFromJwt(token);
 
             var tasks = await context.Tasks
                 .Include(t => t.Tags)
@@ -139,6 +129,14 @@ namespace TaskService.Services.TaskServices
             };
 
             return taskDto;
+        }
+
+        private int ExtractUserIdFromJwt(string jwt)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var decodedToken = handler.ReadJwtToken(jwt);
+
+            return int.Parse(decodedToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value);
         }
     }
 }
