@@ -44,6 +44,13 @@ builder.Configuration
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<TaskDbContext>();
+    var dataInitializer = new DataInitializer(context);
+    await dataInitializer.initializeDataAsync();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
