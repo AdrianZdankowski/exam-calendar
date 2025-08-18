@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TaskService.DTO;
 using TaskService.Services.TagServices;
 
@@ -18,7 +19,14 @@ namespace TaskService.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (await tagService.CreateTagAsync(request) is false)
+            var authHeader = HttpContext.Request.Headers.Authorization.ToString();
+
+            if (string.IsNullOrEmpty(authHeader) && !authHeader.StartsWith("Bearer", StringComparison.OrdinalIgnoreCase))
+                return Unauthorized();
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+
+            if (await tagService.CreateTagAsync(request, token) is false)
             {
                 return BadRequest("Tag with the given name already exists!");
             }
@@ -28,16 +36,25 @@ namespace TaskService.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<List<TagDto>> GetAllTags()
+        public async Task<ActionResult<List<TagDto>>> GetAllTags()
         {
-            return await tagService.GetAllTagsAsync();
+            var userIdClaim = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+
+            return await tagService.GetAllTagsAsync(userIdClaim);
         }
 
         [Authorize]
         [HttpGet("{TagId}")]
-        public async Task<TagDto> GetTagById(int TagId)
+        public async Task<ActionResult<TagDto>> GetTagById(int TagId)
         {
-            return await tagService.GetTagAsync(TagId);
+            var authHeader = HttpContext.Request.Headers.Authorization.ToString();
+
+            if (string.IsNullOrEmpty(authHeader) && !authHeader.StartsWith("Bearer", StringComparison.OrdinalIgnoreCase))
+                return Unauthorized();
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+
+            return await tagService.GetTagAsync(TagId, token);
         }
     }
 }

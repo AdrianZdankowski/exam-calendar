@@ -22,8 +22,8 @@ namespace TaskService.Data
 
         private async Task addTags()
         {
-            var tag1 = new Tag { Name = "WORK" };
-            var tag2 = new Tag { Name = "PRIVATE" };
+            var tag1 = new Tag { Name = "WORK" , UserId = 1};
+            var tag2 = new Tag { Name = "PRIVATE" , UserId = 2};
 
             taskDbContext.Tags.Add(tag1);
             taskDbContext.Tags.Add(tag2);

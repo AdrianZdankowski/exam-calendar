@@ -5,9 +5,9 @@ namespace TaskService.Services.TaskServices
 {
     public interface ITaskItemService
     {
-        Task<TaskItem> CreateTaskAsync(TaskPostDto taskPostDto);
+        Task<TaskItem> CreateTaskAsync(TaskPostDto taskPostDto, string token);
 
-        Task<TaskDto> GetTaskAsync(int id);
+        Task<TaskDto> GetTaskAsync(int id, string token);
 
         Task<List<TaskDto>> GetAllTasksByUserIdAsync(string token);
 

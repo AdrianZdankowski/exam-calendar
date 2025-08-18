@@ -19,7 +19,14 @@ namespace TaskService.Controllers
                 return BadRequest(ModelState);
             }
 
-            var task = await taskService.CreateTaskAsync(request);
+            var authHeader = HttpContext.Request.Headers.Authorization.ToString();
+
+            if (string.IsNullOrEmpty(authHeader) && !authHeader.StartsWith("Bearer", StringComparison.OrdinalIgnoreCase))
+                return Unauthorized();
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+
+            var task = await taskService.CreateTaskAsync(request, token);
 
             if (task == null) return BadRequest("No tags found with specified ids");
 
@@ -30,7 +37,14 @@ namespace TaskService.Controllers
         [HttpGet("{taskId:int}")]
         public async Task<ActionResult<TaskDto>> GetTaskById(int taskId)
         {
-            var taskDto = await taskService.GetTaskAsync(taskId);
+            var authHeader = HttpContext.Request.Headers.Authorization.ToString();
+
+            if (string.IsNullOrEmpty(authHeader) && !authHeader.StartsWith("Bearer", StringComparison.OrdinalIgnoreCase))
+                return Unauthorized();
+
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+
+            var taskDto = await taskService.GetTaskAsync(taskId, token);
 
             if (taskDto == null) return BadRequest("No task found with specified id");
 

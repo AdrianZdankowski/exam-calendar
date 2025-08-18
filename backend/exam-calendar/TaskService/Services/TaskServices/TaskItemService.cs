@@ -10,13 +10,17 @@ namespace TaskService.Services.TaskServices
 {
     public class TaskItemService(TaskDbContext context) : ITaskItemService
     {
-        public async Task<TaskItem> CreateTaskAsync(TaskPostDto taskPostDto)
+        public async Task<TaskItem> CreateTaskAsync(TaskPostDto taskPostDto, string token)
         {
+            var userId = JwtHelper.ExtractUserIdFromJwt(token);
+
+            if (userId == null) return null;
+
             var tags = await context.Tags
-                .Where(t => taskPostDto.TagIds.Contains(t.Id))
+                .Where(t => taskPostDto.TagIds.Contains(t.Id) && t.UserId == userId)
                 .ToListAsync();
 
-            if (tags == null) return null;
+            if (!tags.Any()) return null;
 
             var task = new TaskItem
             {
@@ -113,11 +117,13 @@ namespace TaskService.Services.TaskServices
             return null;
         }
 
-        public async Task<TaskDto> GetTaskAsync(int id)
+        public async Task<TaskDto> GetTaskAsync(int id, string token)
         {
+            var userId = JwtHelper.ExtractUserIdFromJwt(token);
+
             var task = await context.Tasks
                 .Include(t => t.Tags)
-                .FirstOrDefaultAsync(t => t.Id == id);
+                .FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId.Value);
 
             if (task == null) return null;
 
