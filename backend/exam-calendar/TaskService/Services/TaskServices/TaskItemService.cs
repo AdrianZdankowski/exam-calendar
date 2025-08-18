@@ -4,6 +4,7 @@ using System.Security.Claims;
 using TaskService.Data;
 using TaskService.DTO;
 using TaskService.Entities;
+using TaskService.Helpers;
 
 namespace TaskService.Services.TaskServices
 {
@@ -34,7 +35,9 @@ namespace TaskService.Services.TaskServices
 
         public async Task<bool> DeleteTaskAsync(string token, int id)
         {
-            int userId = ExtractUserIdFromJwt(token);
+            var userId = JwtHelper.ExtractUserIdFromJwt(token);
+
+            if (userId == null) return false;
 
             var task = await context.Tasks.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
             if (task == null) return false;
@@ -46,7 +49,9 @@ namespace TaskService.Services.TaskServices
 
         public async Task<List<TaskDto>> GetAllTasksByUserIdAsync(string token)
         {
-            int userId = ExtractUserIdFromJwt(token);
+            var userId = JwtHelper.ExtractUserIdFromJwt(token);
+
+            if (userId == null) return null;
 
             var tasks = await context.Tasks
                 .Include(t => t.Tags)
@@ -76,7 +81,9 @@ namespace TaskService.Services.TaskServices
 
         public async Task<List<TaskDto>> GetUserTasksByMonthAsync(string token, int year, int month)
         {
-            int userId = ExtractUserIdFromJwt(token);
+            var userId = JwtHelper.ExtractUserIdFromJwt(token);
+
+            if (userId == null) return null;
 
             var tasks = await context.Tasks
                 .Include(t => t.Tags)
@@ -129,14 +136,6 @@ namespace TaskService.Services.TaskServices
             };
 
             return taskDto;
-        }
-
-        private int ExtractUserIdFromJwt(string jwt)
-        {
-            var handler = new JwtSecurityTokenHandler();
-            var decodedToken = handler.ReadJwtToken(jwt);
-
-            return int.Parse(decodedToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value);
         }
     }
 }
