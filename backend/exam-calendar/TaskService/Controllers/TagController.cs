@@ -19,14 +19,9 @@ namespace TaskService.Controllers
                 return BadRequest(ModelState);
             }
 
-            var authHeader = HttpContext.Request.Headers.Authorization.ToString();
+            var userIdClaim = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
 
-            if (string.IsNullOrEmpty(authHeader) && !authHeader.StartsWith("Bearer", StringComparison.OrdinalIgnoreCase))
-                return Unauthorized();
-
-            var token = authHeader.Substring("Bearer ".Length).Trim();
-
-            if (await tagService.CreateTagAsync(request, token) is false)
+            if (await tagService.CreateTagAsync(request, userIdClaim) is false)
             {
                 return BadRequest("Tag with the given name already exists!");
             }
@@ -47,14 +42,9 @@ namespace TaskService.Controllers
         [HttpGet("{TagId}")]
         public async Task<ActionResult<TagDto>> GetTagById(int TagId)
         {
-            var authHeader = HttpContext.Request.Headers.Authorization.ToString();
+            var userIdClaim = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
 
-            if (string.IsNullOrEmpty(authHeader) && !authHeader.StartsWith("Bearer", StringComparison.OrdinalIgnoreCase))
-                return Unauthorized();
-
-            var token = authHeader.Substring("Bearer ".Length).Trim();
-
-            return await tagService.GetTagAsync(TagId, token);
+            return await tagService.GetTagAsync(TagId, userIdClaim);
         }
     }
 }

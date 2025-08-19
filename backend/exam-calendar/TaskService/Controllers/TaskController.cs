@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TaskService.DTO;
 using TaskService.Services.TaskServices;
 
@@ -19,14 +20,9 @@ namespace TaskService.Controllers
                 return BadRequest(ModelState);
             }
 
-            var authHeader = HttpContext.Request.Headers.Authorization.ToString();
+            var userIdClaim = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
 
-            if (string.IsNullOrEmpty(authHeader) && !authHeader.StartsWith("Bearer", StringComparison.OrdinalIgnoreCase))
-                return Unauthorized();
-
-            var token = authHeader.Substring("Bearer ".Length).Trim();
-
-            var task = await taskService.CreateTaskAsync(request, token);
+            var task = await taskService.CreateTaskAsync(request, userIdClaim);
 
             if (task == null) return BadRequest("No tags found with specified ids");
 
@@ -37,14 +33,9 @@ namespace TaskService.Controllers
         [HttpGet("{taskId:int}")]
         public async Task<ActionResult<TaskDto>> GetTaskById(int taskId)
         {
-            var authHeader = HttpContext.Request.Headers.Authorization.ToString();
+            var userIdClaim = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
 
-            if (string.IsNullOrEmpty(authHeader) && !authHeader.StartsWith("Bearer", StringComparison.OrdinalIgnoreCase))
-                return Unauthorized();
-
-            var token = authHeader.Substring("Bearer ".Length).Trim();
-
-            var taskDto = await taskService.GetTaskAsync(taskId, token);
+            var taskDto = await taskService.GetTaskAsync(taskId, userIdClaim);
 
             if (taskDto == null) return BadRequest("No task found with specified id");
 
@@ -52,17 +43,12 @@ namespace TaskService.Controllers
         }
 
         [Authorize]
-        [HttpGet("user")]
+        [HttpGet]
         public async Task<ActionResult<List<TaskDto>>> GetAllUserTasks()
         {
-            var authHeader = HttpContext.Request.Headers.Authorization.ToString();
+            var userIdClaim = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
 
-            if (string.IsNullOrEmpty(authHeader) && !authHeader.StartsWith("Bearer", StringComparison.OrdinalIgnoreCase))
-                return Unauthorized();
-
-            var token = authHeader.Substring("Bearer ".Length).Trim();
-
-            var tasks = await taskService.GetAllTasksByUserIdAsync(token);
+            var tasks = await taskService.GetAllTasksByUserIdAsync(userIdClaim);
 
             if (tasks == null) return BadRequest("Wrong user id");
 
@@ -70,17 +56,12 @@ namespace TaskService.Controllers
         }
 
         [Authorize]
-        [HttpGet("user/date/{year:int}/{month:int}")]
+        [HttpGet("date/{year:int}/{month:int}")]
         public async Task<ActionResult<List<TaskDto>>> GetUserTasksByMonth(int year, int month)
         {
-            var authHeader = HttpContext.Request.Headers.Authorization.ToString();
+            var userIdClaim = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
 
-            if (string.IsNullOrEmpty(authHeader) && !authHeader.StartsWith("Bearer", StringComparison.OrdinalIgnoreCase))
-                return Unauthorized();
-
-            var token = authHeader.Substring("Bearer ".Length).Trim();
-
-            var tasks = await taskService.GetUserTasksByMonthAsync(token, year, month);
+            var tasks = await taskService.GetUserTasksByMonthAsync(userIdClaim, year, month);
 
             if (month < 1 || month > 12) return BadRequest("Month must be between 1 and 12");
 
@@ -93,14 +74,9 @@ namespace TaskService.Controllers
         [HttpDelete("{taskId:int}")]
         public async Task<ActionResult<string>> DeleteTask(int taskId)
         {
-            var authHeader = HttpContext.Request.Headers.Authorization.ToString();
+            var userIdClaim = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
 
-            if (string.IsNullOrEmpty(authHeader) && !authHeader.StartsWith("Bearer", StringComparison.OrdinalIgnoreCase))
-                return Unauthorized();
-
-            var token = authHeader.Substring("Bearer ".Length).Trim();
-
-            if (await taskService.DeleteTaskAsync(token,taskId)) return Ok($"Task with id: {taskId} was deleted");
+            if (await taskService.DeleteTaskAsync(userIdClaim,taskId)) return Ok($"Task with id: {taskId} was deleted");
             else return BadRequest("No task found with specified id");
         }
     }

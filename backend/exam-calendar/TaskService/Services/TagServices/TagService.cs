@@ -8,18 +8,15 @@ namespace TaskService.Services.TagServices
 {
     public class TagService(TaskDbContext context) : ITagService
     {
-        public async Task<bool> CreateTagAsync(TagPostDto tagPostDto, string token)
+        public async Task<bool> CreateTagAsync(TagPostDto tagPostDto, int userId)
         {
-            var userId = JwtHelper.ExtractUserIdFromJwt(token);
 
-            if (userId == null) return false;
-
-            if (await context.Tags.AnyAsync(t => t.Name == tagPostDto.Name && t.UserId == userId.Value))
+            if (await context.Tags.AnyAsync(t => t.Name == tagPostDto.Name && t.UserId == userId))
             {
                 return false;
             }
 
-            var tag = new Tag() { Name = tagPostDto.Name , UserId = userId.Value };
+            var tag = new Tag() { Name = tagPostDto.Name , UserId = userId };
             
             context.Tags.Add(tag);
             await context.SaveChangesAsync();
@@ -35,11 +32,9 @@ namespace TaskService.Services.TagServices
                 .ToListAsync();
         }
 
-        public async Task<TagDto> GetTagAsync(int id, string token)
+        public async Task<TagDto> GetTagAsync(int id, int userId)
         {
-            var userId = JwtHelper.ExtractUserIdFromJwt(token);
-
-            var tag = await context.Tags.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId.Value);
+            var tag = await context.Tags.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
             if (tag == null) return null;
             var response = new TagDto();
             response.Id = tag.Id;

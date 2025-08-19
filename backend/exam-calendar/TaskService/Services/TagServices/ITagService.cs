@@ -4,10 +4,10 @@ namespace TaskService.Services.TagServices
 {
     public interface ITagService
     {
-        Task<bool> CreateTagAsync(TagPostDto tagPostDto, string token);
+        Task<bool> CreateTagAsync(TagPostDto tagPostDto, int userId);
 
-        Task<List<TagDto>> GetAllTagsAsync(int token);
+        Task<List<TagDto>> GetAllTagsAsync(int userId);
 
-        Task<TagDto> GetTagAsync(int id, string token);
+        Task<TagDto> GetTagAsync(int id, int userId);
     }
 }

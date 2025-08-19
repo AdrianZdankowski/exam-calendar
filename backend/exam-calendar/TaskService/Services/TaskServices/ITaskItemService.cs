@@ -5,14 +5,14 @@ namespace TaskService.Services.TaskServices
 {
     public interface ITaskItemService
     {
-        Task<TaskItem> CreateTaskAsync(TaskPostDto taskPostDto, string token);
+        Task<TaskItem> CreateTaskAsync(TaskPostDto taskPostDto, int userId);
 
-        Task<TaskDto> GetTaskAsync(int id, string token);
+        Task<TaskDto> GetTaskAsync(int id, int userId);
 
-        Task<List<TaskDto>> GetAllTasksByUserIdAsync(string token);
+        Task<List<TaskDto>> GetAllTasksByUserIdAsync(int userId);
 
-        Task<List<TaskDto>> GetUserTasksByMonthAsync(string token, int year, int month);
+        Task<List<TaskDto>> GetUserTasksByMonthAsync(int userId, int year, int month);
 
-        Task<bool> DeleteTaskAsync(string token, int id);
+        Task<bool> DeleteTaskAsync(int userId, int id);
     }
 }

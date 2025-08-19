@@ -10,12 +10,8 @@ namespace TaskService.Services.TaskServices
 {
     public class TaskItemService(TaskDbContext context) : ITaskItemService
     {
-        public async Task<TaskItem> CreateTaskAsync(TaskPostDto taskPostDto, string token)
+        public async Task<TaskItem> CreateTaskAsync(TaskPostDto taskPostDto, int userId)
         {
-            var userId = JwtHelper.ExtractUserIdFromJwt(token);
-
-            if (userId == null) return null;
-
             var tags = await context.Tags
                 .Where(t => taskPostDto.TagIds.Contains(t.Id) && t.UserId == userId)
                 .ToListAsync();
@@ -37,12 +33,8 @@ namespace TaskService.Services.TaskServices
             return task;
         }
 
-        public async Task<bool> DeleteTaskAsync(string token, int id)
+        public async Task<bool> DeleteTaskAsync(int userId, int id)
         {
-            var userId = JwtHelper.ExtractUserIdFromJwt(token);
-
-            if (userId == null) return false;
-
             var task = await context.Tasks.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
             if (task == null) return false;
 
@@ -51,12 +43,8 @@ namespace TaskService.Services.TaskServices
             return true;
         }
 
-        public async Task<List<TaskDto>> GetAllTasksByUserIdAsync(string token)
+        public async Task<List<TaskDto>> GetAllTasksByUserIdAsync(int userId)
         {
-            var userId = JwtHelper.ExtractUserIdFromJwt(token);
-
-            if (userId == null) return null;
-
             var tasks = await context.Tasks
                 .Include(t => t.Tags)
                 .Where(t => t.UserId == userId)
@@ -83,12 +71,8 @@ namespace TaskService.Services.TaskServices
             return null;
         }
 
-        public async Task<List<TaskDto>> GetUserTasksByMonthAsync(string token, int year, int month)
+        public async Task<List<TaskDto>> GetUserTasksByMonthAsync(int userId, int year, int month)
         {
-            var userId = JwtHelper.ExtractUserIdFromJwt(token);
-
-            if (userId == null) return null;
-
             var tasks = await context.Tasks
                 .Include(t => t.Tags)
                 .Where (t => t.UserId == userId
@@ -117,13 +101,11 @@ namespace TaskService.Services.TaskServices
             return null;
         }
 
-        public async Task<TaskDto> GetTaskAsync(int id, string token)
+        public async Task<TaskDto> GetTaskAsync(int id, int userId)
         {
-            var userId = JwtHelper.ExtractUserIdFromJwt(token);
-
             var task = await context.Tasks
                 .Include(t => t.Tags)
-                .FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId.Value);
+                .FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
 
             if (task == null) return null;
 
