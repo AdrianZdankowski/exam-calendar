@@ -11,7 +11,6 @@ namespace TaskService.DTO
         public TimeOnly? TaskTime {  get; set; }
         [Required]
         public string Description {  get; set; } = string.Empty;
-        [Required]
-        public List<int> TagIds { get; set; } = new List<int>();
+        public List<int> TagIds { get; set; } = new();
     }
 }

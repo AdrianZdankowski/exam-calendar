@@ -12,11 +12,18 @@ namespace TaskService.Services.TaskServices
     {
         public async Task<TaskItem> CreateTaskAsync(TaskPostDto taskPostDto, int userId)
         {
-            var tags = await context.Tags
-                .Where(t => taskPostDto.TagIds.Contains(t.Id) && (t.UserId == userId || t.UserId == null))
-                .ToListAsync();
 
-            if (tags.Count != taskPostDto.TagIds.Count) return null;
+            var tags = new List<Tag>();
+
+            if (taskPostDto.TagIds.Any())
+            {
+
+                tags = await context.Tags
+                    .Where(t => taskPostDto.TagIds.Contains(t.Id) && (t.UserId == userId || t.UserId == null))
+                    .ToListAsync();
+
+                if (tags.Count != taskPostDto.TagIds.Count) return null;
+            }
 
             var task = new TaskItem
             {
