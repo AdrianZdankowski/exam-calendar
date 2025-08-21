@@ -50,7 +50,7 @@ namespace TaskService.Controllers
 
             var tasks = await taskService.GetAllTasksByUserIdAsync(userIdClaim);
 
-            if (tasks == null) return BadRequest("Wrong user id");
+            if (tasks == null) return NoContent();
 
             return Ok(tasks);
         }

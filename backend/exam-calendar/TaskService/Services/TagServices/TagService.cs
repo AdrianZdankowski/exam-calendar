@@ -27,14 +27,14 @@ namespace TaskService.Services.TagServices
         public async Task<List<TagDto>> GetAllTagsAsync(int userId)
         {
             return await context.Tags
-                .Where(t => t.UserId == userId)
+                .Where(t => t.UserId == userId || t.UserId == null)
                 .Select(t => new TagDto { Id = t.Id, Name = t.Name })
                 .ToListAsync();
         }
 
         public async Task<TagDto> GetTagAsync(int id, int userId)
         {
-            var tag = await context.Tags.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
+            var tag = await context.Tags.FirstOrDefaultAsync(t => t.Id == id && (t.UserId == userId || t.UserId == null));
             if (tag == null) return null;
             var response = new TagDto();
             response.Id = tag.Id;
