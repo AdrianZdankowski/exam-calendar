@@ -1,10 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using TaskService.Data;
 using TaskService.DTO;
 using TaskService.Entities;
-using TaskService.Helpers;
 
 namespace TaskService.Services.TaskServices
 {

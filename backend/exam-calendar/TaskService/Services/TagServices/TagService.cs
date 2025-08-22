@@ -2,7 +2,6 @@
 using TaskService.Data;
 using TaskService.DTO;
 using TaskService.Entities;
-using TaskService.Helpers;
 
 namespace TaskService.Services.TagServices
 {
