@@ -1,22 +1,24 @@
-using authService.Data;
-using authService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
+using TaskService.Data;
+using TaskService.Services.TagServices;
+using TaskService.Services.TaskServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<ITaskItemService, TaskItemService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddDbContext<AuthDbContext>(options => options.UseInMemoryDatabase("authDb"));
+builder.Services.AddDbContext<TaskDbContext>(options => options.UseInMemoryDatabase("taskDb"));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -44,9 +46,9 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
-    var dataInit = new DataInitializer(context);
-    await dataInit.initializeDataAsync();
+    var context = scope.ServiceProvider.GetRequiredService<TaskDbContext>();
+    var dataInitializer = new DataInitializer(context);
+    await dataInitializer.initializeDataAsync();
 }
 
 // Configure the HTTP request pipeline.
@@ -56,11 +58,11 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
-
-//app.UseCors();
 
 app.MapControllers();
 

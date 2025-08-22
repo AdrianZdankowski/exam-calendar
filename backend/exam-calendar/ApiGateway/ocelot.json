@@ -12,6 +12,32 @@
           "Port": 5280
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/task/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+
+      "DownstreamPathTemplate": "/api/task/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5281
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/tag/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+
+      "DownstreamPathTemplate": "/api/tag/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5281
+        }
+      ]
     }
   ],
   "GlobalConfiguration": {
