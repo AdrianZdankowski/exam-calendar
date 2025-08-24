@@ -9,14 +9,28 @@ const Calendar = () => {
     //console.log(currentDate);
 
     const daysInMonth = (date: string): number => {
-        return new Date(Number(date.slice(0,4)), Number(date.slice(6,7)), 0).getDate();
+        return new Date(Number(date.slice(0,4)), Number(date.slice(5,7)), 0).getDate();
     };
+
+    const firstDayOfMonth = new Date(Number(currentDate.slice(0,4)), Number(currentDate.slice(5,7))-1, 1).getDay();
+
+    const startOffset = (firstDayOfMonth + 6) % 7;
+
+    console.log("Dzień: " + firstDayOfMonth)
    
     //console.log(`Dni w miesiacu: ${daysInMonth(currentDate)}`);
 
     const totalDays = daysInMonth(currentDate);
 
-    return(
+    const calendarDays = [
+        ...Array.from({length: startOffset}, () => null),
+        ...Array.from({length: totalDays}, (_, i) => i + 1)
+    ];
+
+    const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+    return<>
+       <Box>
         <Box 
         sx=
         {{
@@ -24,30 +38,41 @@ const Calendar = () => {
             maxWidth: "100vw",
             display: "flex",
             flexDirection: {sm: "row", xs: "column"},
-            gap: {sm: 0, xs: 1},
+            gap: {sm: 2, xs: 1},
 
         }}
         >
             <Box 
             sx={{
-                maxWidth: {sm: "70%"},
-                height: "50%",
+                width: "100%",
+                height: "80vh",
                 display: 'grid', 
                 gridAutoRows: "1fr",
                 backgroundColor: "red",
                 gap: 1, 
-                padding: 0, 
+                padding: 1, 
                 margin: 0, 
                 gridTemplateColumns: "repeat(7,1fr)",
-                gridTemplateRows: "repeat(4, 1fr)"
                 }}>
-                {Array.from({length: totalDays}, (_, i) => (
-                    <CalendarCard key={i}/>
+                {daysOfWeek.map((day) => (
+                    <Box
+                    key={day}
+                    sx={{
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        padding: "0.5rem"
+                    }}>
+                        {day}
+                    </Box>
                 ))}
+                {calendarDays.map((day, i) => day ? (
+                    <CalendarCard key={i} dayNumber={day} />) : (<Box key={i}/>)
+                )}
             </Box>
             <Box
             sx={{
                 backgroundColor: "green",
+                borderRadius: "0.25rem",
                 width: {xs: "100%",sm:"30%"},
                 overflow: "hidden",
             }}>
@@ -62,7 +87,8 @@ Integer fermentum velit at ex sodales, ut fringilla diam feugiat. Orci varius na
 In pretium arcu tellus, ut vehicula tortor rutrum id. Aenean vestibulum tellus id rhoncus lobortis. Morbi ut eleifend justo. Pellentesque finibus tincidunt sem, vitae consectetur augue dictum quis. Mauris id lacus mauris. Vivamus est velit, maximus eget sapien quis, tempor pretium arcu. Aliquam erat volutpat. Quisque enim nisi, consectetur ac justo vitae, scelerisque ullamcorper diam. Aliquam non lorem sit amet diam lacinia luctus.</p>
             </Box>
         </Box>
-    );
+        </Box>
+    </>
 };
 
 export default Calendar;

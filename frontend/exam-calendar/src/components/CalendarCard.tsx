@@ -1,33 +1,47 @@
-import { Card, Typography, Divider, Box, Chip } from "@mui/material";
+import { Card, Typography, Box, Chip } from "@mui/material";
+
+interface CalendarCardProps {
+    dayNumber: number;
+}
 
 const handleClick = () => {
     console.log("Card clicked")
 }
 
-const CalendarCard = () => {
+
+
+const CalendarCard = ({dayNumber} : CalendarCardProps) => {
     return (
-        <Card onClick={handleClick}sx={{height: "100%", padding: 0, margin: 0, backgroundColor: "#8395a7", color: "whitesmoke"}}>
-            <Box mb={1} sx={{backgroundColor: "#576574"}}>
-                <Typography variant="h5" sx={{paddingLeft: "0.5rem"}}>22</Typography>
-                <Divider/>
-            </Box>
-            <Typography variant="h6" sx={{paddingLeft: "0.5rem"}}>
-                3 Tasks
-            </Typography>
-            <Divider/>
-            <Box
+        <Card onClick={handleClick} 
+        sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            alignItems: "center",
+            height: "100%", 
+            width: "100%",
+            padding: 0.5, 
+            margin: 0, 
+            backgroundColor: "#8395a7", 
+            color: "whitesmoke",
+            cursor: "pointer",
+            }}>
+                <Typography>{dayNumber}</Typography>
+                <Chip size="small" label="3" sx={{color: "whitesmoke"}}/>
+                <Box
                 sx={{
-                    display: "flex", 
-                    alignContent: "center",
+                    display: "flex",
+                    alignItems: "center",
                     justifyContent: "center",
-                    flexWrap: "wrap", 
-                    padding: 1, 
-                    gap: 1
+                    flexFlow: "wrap",
+                    gap: "0.25rem",
+                    mb: "0.25rem"
                 }}>
                 <Chip size="small" label="WORK" sx={{color: "whitesmoke"}}/>
                 <Chip size="small" label="PRIVATE" sx={{color: "whitesmoke"}}/>
                 <Chip size="small" label="UNIVERSITY" sx={{color: "whitesmoke"}}/>
-            </Box>
+               
+                </Box>
         </Card>
     )
 }
