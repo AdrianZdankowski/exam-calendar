@@ -22,7 +22,7 @@ const CalendarCard = ({dayNumber} : CalendarCardProps) => {
             width: "100%",
             padding: 0.5, 
             margin: 0, 
-            backgroundColor: "#8395a7", 
+            backgroundColor: "#2d3748", 
             color: "whitesmoke",
             cursor: "pointer",
             }}>

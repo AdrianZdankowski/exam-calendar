@@ -42,32 +42,41 @@ const Calendar = () => {
 
         }}
         >
+            <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column"
+            }}>
+            <Box sx={{display: "grid", gridTemplateColumns: "repeat(7,1fr)"}}>
+             {daysOfWeek.map((day) => (
+                    <Box
+                    key={day}
+                    sx={{
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        color: "whitesmoke"
+                    }}>
+                        {day}
+                    </Box>
+                ))}
+            </Box>    
             <Box 
             sx={{
                 width: "100%",
                 height: "80vh",
                 display: 'grid', 
                 gridAutoRows: "1fr",
-                backgroundColor: "red",
+                backgroundColor: "#242c3a",
                 gap: 1, 
                 padding: 1, 
                 margin: 0, 
                 gridTemplateColumns: "repeat(7,1fr)",
                 }}>
-                {daysOfWeek.map((day) => (
-                    <Box
-                    key={day}
-                    sx={{
-                        textAlign: "center",
-                        fontWeight: "bold",
-                        padding: "0.5rem"
-                    }}>
-                        {day}
-                    </Box>
-                ))}
+               
                 {calendarDays.map((day, i) => day ? (
                     <CalendarCard key={i} dayNumber={day} />) : (<Box key={i}/>)
                 )}
+            </Box>
             </Box>
             <Box
             sx={{
