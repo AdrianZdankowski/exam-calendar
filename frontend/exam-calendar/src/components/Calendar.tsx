@@ -1,13 +1,17 @@
 import { Box } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CalendarCard from "./CalendarCard";
+import type { Task } from "../types/types";
+import api from "../api/axios";
 
 const Calendar = () => {
 
-    const currentDate = new Date().toISOString().slice(0,10);
-   
-    //console.log(currentDate);
+    const [tasks, setTasks] = useState<Task[]>([]);
 
+    const currentDate = new Date().toISOString().slice(0,10);
+
+    console.log("Rok: " + Number(currentDate.slice(0,4)) + " Miesiąc: " + Number(currentDate.slice(6,7)));
+   
     const daysInMonth = (date: string): number => {
         return new Date(Number(date.slice(0,4)), Number(date.slice(5,7)), 0).getDate();
     };
@@ -15,10 +19,6 @@ const Calendar = () => {
     const firstDayOfMonth = new Date(Number(currentDate.slice(0,4)), Number(currentDate.slice(5,7))-1, 1).getDay();
 
     const startOffset = (firstDayOfMonth + 6) % 7;
-
-    console.log("Dzień: " + firstDayOfMonth)
-   
-    //console.log(`Dni w miesiacu: ${daysInMonth(currentDate)}`);
 
     const totalDays = daysInMonth(currentDate);
 
@@ -29,13 +29,29 @@ const Calendar = () => {
 
     const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+    useEffect(() => {
+        const getTasksByMonth = async () => {
+            try {
+                const response = await api.get<Task[]>('/task/date/2025/8');
+                setTasks(response.data);
+            }
+            catch (error) {
+                console.error(error);
+            }
+        };
+
+        getTasksByMonth();
+    }, []);
+
+    console.log(tasks);
+
     return<>
        <Box>
         <Box 
         sx=
         {{
-            backgroundColor: "aqua",
-            maxWidth: "100vw",
+            
+            width: "100vw",
             display: "flex",
             flexDirection: {sm: "row", xs: "column"},
             gap: {sm: 2, xs: 1},
@@ -62,7 +78,7 @@ const Calendar = () => {
             </Box>    
             <Box 
             sx={{
-                width: "100%",
+                width: {sm: "70vw", xs: "100%"},
                 height: "80vh",
                 display: 'grid', 
                 gridAutoRows: "1fr",
@@ -73,9 +89,26 @@ const Calendar = () => {
                 gridTemplateColumns: "repeat(7,1fr)",
                 }}>
                
-                {calendarDays.map((day, i) => day ? (
-                    <CalendarCard key={i} dayNumber={day} />) : (<Box key={i}/>)
-                )}
+                {calendarDays.map((day, i) => {
+                    if (!day) return <Box key={i} />;
+
+                    const dayTasks = tasks.filter((task) => {
+                        const taskDay = Number(task.taskDate.slice(8, 10));
+                        return taskDay === day;
+                    });
+
+                    const taskCount = dayTasks.length;
+                    const tags = dayTasks.flatMap((t) => t.tags);
+
+                    return (
+                        <CalendarCard
+                        key={i}
+                        dayNumber={day}
+                        taskCount={taskCount}
+                        tags={tags}
+                        />
+                    );
+                    })};
             </Box>
             </Box>
             <Box
