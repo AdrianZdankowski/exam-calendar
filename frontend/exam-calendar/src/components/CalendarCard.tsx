@@ -24,7 +24,8 @@ const CalendarCard = ({dayNumber, taskCount, tags} : CalendarCardProps) => {
             cursor: "pointer",
             }}>
                 <Typography>{dayNumber}</Typography>
-                <Chip size="small" label={taskCount} sx={{color: "whitesmoke"}}/>
+                {!!taskCount ? <Chip size="small" label={taskCount} sx={{color: "whitesmoke"}}/> : null}
+                
                 <Box
                 sx={{
                     display: "flex",
@@ -34,9 +35,16 @@ const CalendarCard = ({dayNumber, taskCount, tags} : CalendarCardProps) => {
                     gap: "0.25rem",
                     mb: "0.25rem"
                 }}>
-                {tags?.map((tag) => (
-                    <Chip key={tag.id} size="small" label={tag.name} sx={{color: "whitesmoke"}}/>
-                ))}       
+                   {tags?.length ? (
+                    tags.map((tag) => (
+                        <Chip
+                            key={tag.id}
+                            size="small"
+                            label={tag.name}
+                            sx={{color: "whitesmoke"}}
+                        />
+                    ))
+                   ): null}
                 </Box>
         </Card>
     )

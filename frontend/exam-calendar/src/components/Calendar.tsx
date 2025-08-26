@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Select, MenuItem, FormControl} from "@mui/material";
 import { useState, useEffect } from "react";
 import CalendarCard from "./CalendarCard";
 import type { Task } from "../types/types";
@@ -6,21 +6,27 @@ import api from "../api/axios";
 
 const Calendar = () => {
 
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    
     const [tasks, setTasks] = useState<Task[]>([]);
+    const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth());
 
-    const currentDate = new Date().toISOString().slice(0,10);
+    const monthNames = [
+        "January", "February", "March", 
+        "April", "May", "June", 
+        "July", "August", "September", 
+        "October", "November", "December"];
 
-    console.log("Rok: " + Number(currentDate.slice(0,4)) + " Miesiąc: " + Number(currentDate.slice(6,7)));
-   
-    const daysInMonth = (date: string): number => {
-        return new Date(Number(date.slice(0,4)), Number(date.slice(5,7)), 0).getDate();
+    const daysInMonth = (year: number, month: number): number => {
+        return new Date(year, month + 1, 0).getDate();
     };
 
-    const firstDayOfMonth = new Date(Number(currentDate.slice(0,4)), Number(currentDate.slice(5,7))-1, 1).getDay();
+    const firstDayOfMonth = new Date(currentYear, selectedMonth, 1).getDay();
 
     const startOffset = (firstDayOfMonth + 6) % 7;
 
-    const totalDays = daysInMonth(currentDate);
+    const totalDays = daysInMonth(currentYear, selectedMonth);
 
     const calendarDays = [
         ...Array.from({length: startOffset}, () => null),
@@ -32,7 +38,7 @@ const Calendar = () => {
     useEffect(() => {
         const getTasksByMonth = async () => {
             try {
-                const response = await api.get<Task[]>('/task/date/2025/8');
+                const response = await api.get<Task[]>(`/task/date/${currentYear}/${selectedMonth + 1}`);
                 setTasks(response.data);
             }
             catch (error) {
@@ -41,9 +47,9 @@ const Calendar = () => {
         };
 
         getTasksByMonth();
-    }, []);
+    }, [selectedMonth]);
 
-    console.log(tasks);
+    //console.log(tasks);
 
     return<>
        <Box>
@@ -55,7 +61,7 @@ const Calendar = () => {
             display: "flex",
             flexDirection: {sm: "row", xs: "column"},
             gap: {sm: 2, xs: 1},
-
+            
         }}
         >
             <Box
@@ -63,6 +69,16 @@ const Calendar = () => {
                 display: "flex",
                 flexDirection: "column"
             }}>
+            <FormControl sx={{display: "flex", placeItems: "center"}}>
+                <Select 
+                sx={{width: "10rem", color:"whitesmoke"}}
+                value={Number(selectedMonth)}
+                onChange={(e) => setSelectedMonth(Number(e.target.value))}>
+                    {monthNames.map((m,i) => (
+                        <MenuItem key={i} value={i}>{m}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
             <Box sx={{display: "grid", gridTemplateColumns: "repeat(7,1fr)"}}>
              {daysOfWeek.map((day) => (
                     <Box
@@ -81,7 +97,7 @@ const Calendar = () => {
                 width: {sm: "70vw", xs: "100%"},
                 height: "80vh",
                 display: 'grid', 
-                gridAutoRows: "1fr",
+                gridAutoRows: "auto",
                 backgroundColor: "#242c3a",
                 gap: 1, 
                 padding: 1, 
