@@ -5,11 +5,13 @@ interface CalendarCardProps {
     dayNumber: number;
     taskCount?: number;
     tags?: Tag[];
+    onSelectDay?: (day: number) => void;
 }
 
-const CalendarCard = ({dayNumber, taskCount, tags} : CalendarCardProps) => {
+const CalendarCard = ({dayNumber, taskCount, tags, onSelectDay} : CalendarCardProps) => {
     return (
-        <Card 
+        <Card
+        onClick={() => onSelectDay?.(dayNumber)}
         sx={{
             display: "flex",
             flexDirection: "column",

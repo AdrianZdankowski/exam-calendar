@@ -11,5 +11,3 @@ export interface Task {
     description: string;
     tags: Tag[];
 }
-
-export type TaskResponse = Task[];

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import CalendarCard from "./CalendarCard";
 import type { Task } from "../types/types";
 import api from "../api/axios";
+import TaskDetails from "./TaskDetails";
 
 const Calendar = () => {
 
@@ -10,7 +11,9 @@ const Calendar = () => {
     const currentYear = today.getFullYear();
     
     const [tasks, setTasks] = useState<Task[]>([]);
+    const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
     const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth());
+    const [selectedDate, setSelectedDate] = useState<string>(today.toISOString().slice(0,10));
 
     const monthNames = [
         "January", "February", "March", 
@@ -43,11 +46,23 @@ const Calendar = () => {
             }
             catch (error) {
                 console.error(error);
+                setTasks([]);
             }
         };
 
         getTasksByMonth();
     }, [selectedMonth]);
+
+    const handleCalendarCardClick = (day: number) => {
+        setSelectedDate(new Date(currentYear, selectedMonth, day+1).toISOString().slice(0,10));
+
+        const dayTasks = tasks.filter((task) => {
+            const taskDay = Number(task.taskDate.slice(8, 10));
+            return taskDay === day;
+        }); 
+        
+        setSelectedTasks(dayTasks);
+    };
 
     //console.log(tasks);
 
@@ -122,6 +137,7 @@ const Calendar = () => {
                         dayNumber={day}
                         taskCount={taskCount}
                         tags={tags}
+                        onSelectDay={handleCalendarCardClick}
                         />
                     );
                     })};
@@ -134,15 +150,7 @@ const Calendar = () => {
                 width: {xs: "100%",sm:"30%"},
                 overflow: "hidden",
             }}>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam nisl velit, malesuada ut tortor malesuada, ullamcorper laoreet eros. Duis fringilla fringilla lacinia. Praesent facilisis velit rutrum purus vestibulum euismod. In hac habitasse platea dictumst. Phasellus ultricies leo nisl. Suspendisse potenti. Integer eleifend leo nec suscipit tincidunt. Curabitur lacinia est et elementum consectetur. Quisque volutpat aliquam arcu, id venenatis lorem lobortis nec. Donec pellentesque tellus in rutrum venenatis. In hac habitasse platea dictumst. Ut ultrices, justo sed vestibulum venenatis, lectus dolor auctor augue, non finibus nibh est ac urna. Cras in tellus mauris. Pellentesque vel lorem eget metus vestibulum convallis ac quis odio.
-
-Proin finibus non turpis sed consequat. Aliquam luctus, leo quis dictum pretium, nibh nibh tristique diam, nec laoreet orci dolor vel metus. Aliquam maximus ligula nibh, sed ultricies nibh porttitor at. Quisque tempor pharetra pharetra. Nulla pellentesque lorem at ullamcorper porta. Quisque ultrices ipsum in orci porta, sit amet pulvinar lorem fermentum. Mauris sit amet libero non ex porta pellentesque.
-
-Duis posuere nisi justo. Suspendisse potenti. Praesent tincidunt sit amet quam eget iaculis. Fusce at mattis erat, a efficitur tellus. Nam aliquet vel urna ut mattis. Aliquam erat volutpat. Duis vel sapien eu mi tempor porta. Quisque imperdiet dui vitae eros porta, a posuere mauris aliquet. Nulla faucibus viverra metus eget interdum.
-
-Integer fermentum velit at ex sodales, ut fringilla diam feugiat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed aliquam cursus lectus, ut aliquam magna consequat eu. Mauris id ipsum sem. Aenean euismod ornare nisl sit amet varius. Curabitur eget ipsum in sem placerat ultricies. Maecenas semper sed erat in tempus.
-
-In pretium arcu tellus, ut vehicula tortor rutrum id. Aenean vestibulum tellus id rhoncus lobortis. Morbi ut eleifend justo. Pellentesque finibus tincidunt sem, vitae consectetur augue dictum quis. Mauris id lacus mauris. Vivamus est velit, maximus eget sapien quis, tempor pretium arcu. Aliquam erat volutpat. Quisque enim nisi, consectetur ac justo vitae, scelerisque ullamcorper diam. Aliquam non lorem sit amet diam lacinia luctus.</p>
+                <TaskDetails date={selectedDate} tasks={selectedTasks}/>
             </Box>
         </Box>
         </Box>
