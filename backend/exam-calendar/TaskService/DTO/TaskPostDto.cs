@@ -5,8 +5,6 @@ namespace TaskService.DTO
     public class TaskPostDto
     {
         [Required]
-        public int UserId { get; set; }
-        [Required]
         public DateOnly TaskDate { get; set; }
         public TimeOnly? TaskTime {  get; set; }
         [Required]

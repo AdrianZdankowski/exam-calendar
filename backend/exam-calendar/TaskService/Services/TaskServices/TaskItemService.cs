@@ -24,7 +24,7 @@ namespace TaskService.Services.TaskServices
 
             var task = new TaskItem
             {
-                UserId = taskPostDto.UserId,
+                UserId = userId,
                 TaskDate = taskPostDto.TaskDate,
                 TaskTime = taskPostDto.TaskTime,
                 Description = taskPostDto.Description,
@@ -59,7 +59,6 @@ namespace TaskService.Services.TaskServices
                 var taskDtos = tasks.Select(task => new TaskDto
                 {
                     Id = task.Id,
-                    UserId = task.UserId,
                     TaskDate = task.TaskDate,
                     TaskTime = task.TaskTime,
                     Description = task.Description,
@@ -89,7 +88,6 @@ namespace TaskService.Services.TaskServices
                 var taskDtos = tasks.Select(task => new TaskDto
                 {
                     Id = task.Id,
-                    UserId = task.UserId,
                     TaskDate = task.TaskDate,
                     TaskTime = task.TaskTime,
                     Description = task.Description,
@@ -116,7 +114,6 @@ namespace TaskService.Services.TaskServices
             var taskDto = new TaskDto
             {
                 Id = task.Id,
-                UserId = task.UserId,
                 TaskDate = task.TaskDate,
                 TaskTime = task.TaskTime,
                 Description = task.Description,

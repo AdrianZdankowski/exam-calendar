@@ -38,9 +38,9 @@ const CalendarCard = ({dayNumber, taskCount, tags, onSelectDay} : CalendarCardPr
                     mb: "0.25rem"
                 }}>
                    {tags?.length ? (
-                    tags.map((tag) => (
+                    tags.slice(0,3).map((tag, index) => (
                         <Chip
-                            key={tag.id}
+                            key={`${tag.name}${tag.id - index}`}
                             size="small"
                             label={tag.name}
                             sx={{color: "whitesmoke"}}
