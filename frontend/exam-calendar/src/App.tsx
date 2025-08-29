@@ -8,6 +8,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import UserPage from "./pages/UserPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
+import AddTaskPage from "./pages/AddTaskPage";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             </ProtectedAdminRoute>
           }
           />
+          <Route path="addtask" element = {<AddTaskPage/>}/>
           </Route>
         </Routes>
       </Router>

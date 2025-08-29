@@ -34,7 +34,7 @@ const Header = () => {
         <p><Link className="clean-link" to="/login">Login</Link></p>
       }
         <p><Link className="clean-link" to="/users">Users</Link></p>
-        <p>Manage calendar</p>
+        <p><Link className="clean-link" to="/addtask">Add task</Link></p>
       </nav>
       
       
