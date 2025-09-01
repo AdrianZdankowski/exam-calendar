@@ -4,6 +4,7 @@ import CalendarCard from "./CalendarCard";
 import type { Task } from "../types/types";
 import api from "../api/axios";
 import TaskDetails from "./TaskDetails";
+import type { AxiosError } from "axios";
 
 interface TasksByDay {
     [day: number]: Task[];
@@ -57,7 +58,10 @@ const Calendar = () => {
                 setTasks(groupedByDay);
             }
             catch (error) {
-                console.error(error);
+                if ((error as AxiosError).response?.status === 400) {
+                    console.log(`No tasks for ${monthNames[selectedMonth]}`);
+                }
+                else console.error(error);
                 setTasks({});
             }
         };
@@ -115,7 +119,7 @@ const Calendar = () => {
                     <Box
                         sx={{
                             width: { sm: "70vw", xs: "100%" },
-                            height: "80vh",
+                            height: "100%",
                             display: 'grid',
                             gridAutoRows: "auto",
                             backgroundColor: "#242c3a",

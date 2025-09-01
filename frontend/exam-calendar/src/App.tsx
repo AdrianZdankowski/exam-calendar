@@ -25,7 +25,11 @@ function App() {
             </ProtectedAdminRoute>
           }
           />
-          <Route path="addtask" element = {<AddTaskPage/>}/>
+          <Route path="addtask" element = {
+            <ProtectedRoute>
+              <AddTaskPage/>
+            </ProtectedRoute>
+            }/>
           </Route>
         </Routes>
       </Router>

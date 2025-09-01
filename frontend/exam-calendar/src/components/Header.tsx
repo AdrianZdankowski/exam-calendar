@@ -19,6 +19,7 @@ const Header = () => {
       }
     } 
     catch (error) {
+      logout();
       console.error(error);
     }
     

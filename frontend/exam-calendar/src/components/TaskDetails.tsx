@@ -1,4 +1,5 @@
-import { Typography, Divider, Box, Tooltip, Chip } from "@mui/material";
+import { Typography, Divider, Box, Tooltip, Chip, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import DescriptionIcon from '@mui/icons-material/Description';
 import LabelOutlinedIcon from '@mui/icons-material/LabelOutlined';
@@ -11,16 +12,16 @@ interface TaskDetailsProps {
 }
 
 const TaskDetails = ({date, tasks} : TaskDetailsProps) => {
+    const navigate = useNavigate();
+    const handleAddTaskButtonClick = () => {
+        
+        navigate('/addtask', {state: {currentDate: date}});
+    };
+
     return<>
     <Typography variant="h5" sx={{color: "whitesmoke", ml: 1, mt: 1, mb:1}}>{`Tasks for ${date}`}</Typography>
+    <Button onClick={handleAddTaskButtonClick} variant="contained" sx={{ml: 1, mb: 1}}>Add task</Button>
     <Divider sx={{borderBlockColor: "whitesmoke"}}/>
-    {/* {tasks.map((task) => (
-        <div key={task.id}>
-            <p>{task.taskTime}</p>
-            <p>{task.description}</p>
-            <div>Tagi: {task.tags.map((t) => t.name).join(", ")}</div>
-        </div>
-    ))} */}
     {tasks.map((task) => (
         <Box key={task.id} sx={{color:"whitesmoke", mt:2}}>
             <Box sx={{display: "flex", gap: 1, ml: 1}}>
