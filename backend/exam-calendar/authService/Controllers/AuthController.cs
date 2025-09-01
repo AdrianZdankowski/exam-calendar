@@ -65,6 +65,12 @@ namespace authService.Controllers
             bool result = await authService.LogoutAsync(token);
 
             if (!result) return NotFound();
+
+            Response.Cookies.Delete("refreshToken", new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict
+            });
             return Ok("User logged out successfully");
         }
 

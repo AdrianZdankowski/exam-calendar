@@ -25,7 +25,6 @@ export const useAxiosInterceptor = () => {
       async (error) => {
         const originalRequest = error.config;
 
-        // Czy to 401 i czy to nie jest już retry?
         if (error.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
 
