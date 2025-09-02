@@ -16,7 +16,11 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element = {<MainLayout/>}>
-          <Route index element = {<Home/>}/>
+          <Route index element = {
+            <ProtectedRoute>
+              <Home/>
+            </ProtectedRoute>
+            }/>
           <Route path="login" element = {<LoginPage/>}/>
           <Route path="register" element = {<RegisterPage/>}/>
           <Route path="users" element = {

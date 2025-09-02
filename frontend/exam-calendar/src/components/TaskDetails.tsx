@@ -4,6 +4,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import DescriptionIcon from '@mui/icons-material/Description';
 import LabelOutlinedIcon from '@mui/icons-material/LabelOutlined';
 import type { Task } from "../types/types";
+import DeleteTaskDialog from "./DeleteTaskDialog";
 
 
 interface TaskDetailsProps {
@@ -46,8 +47,10 @@ const TaskDetails = ({date, tasks} : TaskDetailsProps) => {
                     ))}
                     
                 </Box>
+                <DeleteTaskDialog taskId={task.id}/>
                 <Divider sx={{borderBlockColor: "whitesmoke"}}/>
             </Box>
+            
         </Box>
     ))}
     

@@ -86,6 +86,7 @@ const LoginPage = () => {
             <Box component="form" onSubmit={handleSubmit} sx={{mt: 2}}>
                 <TextField 
                 fullWidth
+                autoComplete="username"
                 label="Username"
                 type="text"
                 value={username} 
@@ -114,7 +115,8 @@ const LoginPage = () => {
                 placeholder="Enter password" 
                 error={!!passwordError}
                 helperText={passwordError}
-                required 
+                required
+                autoComplete="current-password" 
                 sx={{
                 mb: 2,
                 input: { color: 'whitesmoke' },

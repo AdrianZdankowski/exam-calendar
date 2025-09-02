@@ -15,7 +15,7 @@ const Calendar = () => {
     const today = new Date();
     const currentYear = today.getFullYear();
 
-    const [tasks, setTasks] = useState<TasksByDay>([]);
+    const [tasks, setTasks] = useState<TasksByDay>({});
     const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
     const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth());
     const [selectedDate, setSelectedDate] = useState<string>(today.toISOString().slice(0, 10));
