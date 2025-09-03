@@ -2,9 +2,11 @@ import { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { AxiosError } from 'axios';
 import api from '../api/axios';
+import { useNavigate } from 'react-router-dom';
 
 export const useAxiosInterceptor = () => {
   const { accessToken, login, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // REQUEST INTERCEPTOR
@@ -44,6 +46,7 @@ export const useAxiosInterceptor = () => {
           } catch (refreshError) {
             if ((refreshError as AxiosError).response?.status === 401) {
               logout();
+              navigate('/login', {replace: true});
             }
             return Promise.reject(refreshError);
           }
@@ -57,5 +60,5 @@ export const useAxiosInterceptor = () => {
       api.interceptors.request.eject(requestInterceptor);
       api.interceptors.response.eject(responseInterceptor);
     };
-  }, [accessToken, login, logout]);
+  }, [accessToken, login, logout, navigate]);
 };
