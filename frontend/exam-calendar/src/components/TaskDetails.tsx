@@ -10,9 +10,10 @@ import DeleteTaskDialog from "./DeleteTaskDialog";
 interface TaskDetailsProps {
     date: string;
     tasks: Task[];
+    onRemoveTask: (day: number, taskId: number) => void;
 }
 
-const TaskDetails = ({date, tasks} : TaskDetailsProps) => {
+const TaskDetails = ({date, tasks, onRemoveTask} : TaskDetailsProps) => {
     const navigate = useNavigate();
     const handleAddTaskButtonClick = () => {
         
@@ -47,7 +48,7 @@ const TaskDetails = ({date, tasks} : TaskDetailsProps) => {
                     ))}
                     
                 </Box>
-                <DeleteTaskDialog taskId={task.id}/>
+                <DeleteTaskDialog onRemoveTask={onRemoveTask} date={date} taskId={task.id}/>
                 <Divider sx={{borderBlockColor: "whitesmoke"}}/>
             </Box>
             

@@ -4,10 +4,12 @@ import api from "../api/axios";
 
 interface DeleteDialogProps {
     taskId:number;
+    date: string;
+    onRemoveTask: (day: number, taskId: number) => void;
 };
 
 
-const DeleteTaskDialog = ({taskId} : DeleteDialogProps) => {
+const DeleteTaskDialog = ({taskId, date, onRemoveTask} : DeleteDialogProps) => {
 
     const [open,setOpen] = useState<boolean>(false);
 
@@ -22,7 +24,7 @@ const DeleteTaskDialog = ({taskId} : DeleteDialogProps) => {
         try {
             const response = await api.delete(`/task/${taskId}`);
             console.log(response.data);
-
+            onRemoveTask(Number(date.slice(-2)), taskId);
         }
         catch (error) {
             console.error(error);

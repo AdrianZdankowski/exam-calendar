@@ -7,24 +7,25 @@ import TaskDetails from "./TaskDetails";
 import type { AxiosError } from "axios";
 
 interface TasksByDay {
-    [day: number]: Task[];
+    [day: string]: Task[];
 }
 
 const Calendar = () => {
 
     const today = new Date();
     const currentYear = today.getFullYear();
-
+    
     const [tasks, setTasks] = useState<TasksByDay>({});
-    const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
     const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth());
     const [selectedDate, setSelectedDate] = useState<string>(today.toISOString().slice(0, 10));
-
+    
     const monthNames = [
         "January", "February", "March",
         "April", "May", "June",
         "July", "August", "September",
         "October", "November", "December"];
+
+    const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
     const daysInMonth = (year: number, month: number): number => {
         return new Date(year, month + 1, 0).getDate();
@@ -41,8 +42,6 @@ const Calendar = () => {
         ...Array.from({ length: totalDays }, (_, i) => i + 1)
     ];
 
-    const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
     useEffect(() => {
         const getTasksByMonth = async () => {
             try {
@@ -50,7 +49,7 @@ const Calendar = () => {
 
                 const groupedByDay: TasksByDay = {};
                 response.data.forEach(task => {
-                    const day = Number(task.taskDate.slice(8, 10));
+                    const day = task.taskDate.slice(8, 10);
                     if (!groupedByDay[day]) groupedByDay[day] = [];
                     groupedByDay[day].push(task);
                 });
@@ -71,17 +70,23 @@ const Calendar = () => {
 
     const handleCalendarCardClick = (day: number) => {
         setSelectedDate(new Date(currentYear, selectedMonth, day + 1).toISOString().slice(0, 10));
-        setSelectedTasks(tasks[day] || []);
     };
 
-    //console.log(tasks);
+    const removeTask = (day: number, taskId: number) => {
+        setTasks(prev => {
+            const updated = {...prev};
+            updated[day] = updated[day].filter(task => task.id !== taskId);
+
+            if (updated[day].length === 0) delete updated[day];
+            return updated;
+        });
+    };
 
     return <>
         
             <Box
                 sx=
                 {{
-
                     width: "100vw",
                     display: "flex",
                     flexDirection: { sm: "row", xs: "column" },
@@ -121,7 +126,7 @@ const Calendar = () => {
                             width: { sm: "70vw", xs: "100%" },
                             height: "100%",
                             display: 'grid',
-                            gridAutoRows: "auto",
+                            gridAutoRows: "1fr",
                             backgroundColor: "#242c3a",
                             gap: 1,
                             padding: 1,
@@ -157,7 +162,7 @@ const Calendar = () => {
                         overflowY: "auto",
                         overflowX: "hidden"
                     }}>
-                    <TaskDetails date={selectedDate} tasks={selectedTasks} />
+                    <TaskDetails onRemoveTask={removeTask} date={selectedDate} tasks={tasks[selectedDate.slice(-2)] ?? []} />
                 </Box>
             </Box>
         

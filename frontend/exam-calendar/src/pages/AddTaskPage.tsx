@@ -2,7 +2,7 @@ import { Box, Button, Checkbox, Container, FormControl, InputLabel, ListItemText
 import { useState, useEffect } from "react";
 import type { Tag } from "../types/types";
 import api from "../api/axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate} from "react-router-dom";
 
 interface LocationState {
     currentDate?: string
@@ -11,6 +11,7 @@ interface LocationState {
 const AddTaskPage = () => {
 
     const {state} = useLocation() as {state?: LocationState};
+    const navigate = useNavigate();
 
     const [selectedDate, setSelectedDate] = useState<string>(state?.currentDate || "");
     const [tags, setTags] = useState<Tag[]>([]);
@@ -42,12 +43,12 @@ const AddTaskPage = () => {
         setTaskIds(ids);
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(`Data: ${selectedDate}`);
-        console.log(`Task time: ${taskTime}`);
-        console.log(`Description: ${taskDescription}`);
-        console.log(`Tags: ${taskIds}`);
+        // console.log(`Data: ${selectedDate}`);
+        // console.log(`Task time: ${taskTime}`);
+        // console.log(`Description: ${taskDescription}`);
+        // console.log(`Tags: ${taskIds}`);
 
         const payload = {
             taskDate: selectedDate,
@@ -58,6 +59,9 @@ const AddTaskPage = () => {
 
         try {
             const response = await api.post('/task',payload);
+            navigate('/', {
+            replace: true
+            })
             console.log(`Response: ${response.data}`);
         }
         catch (error) {
