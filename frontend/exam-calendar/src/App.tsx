@@ -9,6 +9,7 @@ import UserPage from "./pages/UserPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import AddTaskPage from "./pages/AddTaskPage";
+import TagsPage from "./pages/TagsPage";
 
 function App() {
   return (
@@ -34,6 +35,12 @@ function App() {
               <AddTaskPage/>
             </ProtectedRoute>
             }/>
+            <Route path="tags" element = {
+            <ProtectedRoute>
+              <TagsPage/>
+            </ProtectedRoute>
+          }
+          />
           </Route>
         </Routes>
       </Router>

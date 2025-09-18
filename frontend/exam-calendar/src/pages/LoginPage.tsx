@@ -8,7 +8,6 @@ interface LocationState {
     registered?: boolean;
 }
 
-
 const LoginPage = () => {
 
     const USERNAME_REGEX = /^[a-zA-Z0-9._-]{3,32}$/;
