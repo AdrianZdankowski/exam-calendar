@@ -79,5 +79,17 @@ namespace TaskService.Controllers
             if (await taskService.DeleteTaskAsync(userIdClaim,taskId)) return Ok($"Task with id: {taskId} was deleted");
             else return BadRequest("No task found with specified id");
         }
+
+        [Authorize]
+        [HttpPut("{taskId:int}")]
+        public async Task<ActionResult<string>> UpdateTask(TaskPostDto taskDto, int taskId)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var userIdClaim = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            if (await taskService.UpdateTaskAsync(taskDto, taskId, userIdClaim) is false) return BadRequest("Incorrect task id or tag ids given");
+
+            return Ok($"Task with id {taskId} updated successfully.");
+        }
     }
 }
