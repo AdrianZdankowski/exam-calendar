@@ -46,5 +46,30 @@ namespace TaskService.Controllers
 
             return await tagService.GetTagAsync(TagId, userIdClaim);
         }
+
+        [Authorize]
+        [HttpDelete("{TagId}")]
+        public async Task<ActionResult<string>> DeleteTag(int TagId)
+        {
+            var userIdClaim = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+
+            if (await tagService.DeleteTagAsync(TagId, userIdClaim) is false)
+            {
+                return NotFound("Tag with specified id was not found or is a global tag.");
+            }
+
+            return Ok("Tag deleted successfully.");
+        }
+
+        [Authorize]
+        [HttpPatch]
+        public async Task<ActionResult<string>> UpdateTag(TagDto tagDto)
+        {
+            var userIdClaim = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+
+            if (await tagService.UpdateTagAsync(tagDto, userIdClaim) is false) return BadRequest("Tag is global or does not exist.");
+
+            return Ok("Tag updated successfully.");
+        }
     }
 }

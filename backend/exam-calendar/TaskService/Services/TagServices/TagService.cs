@@ -23,6 +23,16 @@ namespace TaskService.Services.TagServices
             return true;
         }
 
+        public async Task<bool> DeleteTagAsync(int id, int userId)
+        {
+            var tag = await context.Tags.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
+            if (tag is null) return false;
+
+            context.Tags.Remove(tag);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<List<TagDto>> GetAllTagsAsync(int userId)
         {
             return await context.Tags
@@ -40,6 +50,17 @@ namespace TaskService.Services.TagServices
             response.Name = tag.Name;
 
             return response;
+        }
+
+        public async Task<bool> UpdateTagAsync(TagDto tagDto, int userId)
+        {
+            var tag = await context.Tags.FirstOrDefaultAsync(t => t.Id == tagDto.Id && t.UserId == userId);
+            if (tag is null) return false;
+
+            tag.Name = tagDto.Name;
+
+            await context.SaveChangesAsync();
+            return true;
         }
     }
 }
