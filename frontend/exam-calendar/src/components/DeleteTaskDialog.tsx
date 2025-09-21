@@ -44,8 +44,8 @@ const DeleteTaskDialog = ({taskId, date, onRemoveTask} : DeleteDialogProps) => {
             The task with id {taskId} will be permamently deleted.
         </DialogContent>
         <DialogActions>
-            <Button variant="contained" sx={{backgroundColor: "green"}}onClick={toggleDialog} autoFocus>No</Button>
-            <Button variant="contained" sx={{backgroundColor: "red"}}onClick={handleDeleteClick}>Yes</Button>
+            <Button variant="contained" sx={{backgroundColor: "green"}} onClick={toggleDialog} autoFocus>No</Button>
+            <Button variant="contained" sx={{backgroundColor: "red"}} onClick={handleDeleteClick}>Yes</Button>
         </DialogActions>
     </Dialog>
     </>
