@@ -27,7 +27,7 @@ const DeleteTagDialog = ({open, toggleDialog, tagId, tagName, onTagDeleted} : De
     open={open}
     onClose={toggleDialog}>
         <DialogTitle>
-            {`Permamently delete tag ${tagName} with id ${tagId}?`}
+            Permamently delete tag {tagName} with id {tagId}?
         </DialogTitle>
         <DialogActions>
             <Button variant="contained" onClick={toggleDialog}>No</Button>

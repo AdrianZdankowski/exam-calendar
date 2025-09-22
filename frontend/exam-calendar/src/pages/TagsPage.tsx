@@ -7,18 +7,22 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddTagDialog from "../components/AddTagDialog";
 import DeleteTagDialog from "../components/DeleteTagDialog";
+import EditTagDialog from "../components/EditTagDialog";
 
 const TagsPage = () => {
     const [openAddTagDialog, setOpenTagDialog] = useState<boolean>(false);
     const [openDeleteTagDialog, setOpenDeleteTagDialog] = useState<boolean>(false);
+    const [openEditTagDialog, setOpenEditTagDialog] = useState<boolean>(false);
 
     const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
 
     const toggleAddTagDialog = () => setOpenTagDialog(prev => !prev);
     const toggleDeleteTagDialog = () => setOpenDeleteTagDialog(prev => !prev);
+    const toggleEditTagDialog = () => setOpenEditTagDialog(prev => !prev);
 
-    const handleEdit = (id: number) => {
-        console.log("Edit tag ", id);
+    const handleEdit = (tag: Tag) => {
+        setSelectedTag(tag);
+        toggleEditTagDialog();
     }
 
     const handleDelete = (tag: Tag) => {
@@ -73,6 +77,7 @@ const TagsPage = () => {
     <Container maxWidth="sm">
     <h1>Tags</h1>
     <AddTagDialog open={openAddTagDialog} toggleDialog={toggleAddTagDialog} onTagAdded={getTags}/>
+    <EditTagDialog open={openEditTagDialog} toggleDialog={toggleEditTagDialog} onTagEdited={getTags} tagId={selectedTag?.id} ogTagName={selectedTag?.name}/>
     <DeleteTagDialog open={openDeleteTagDialog} toggleDialog={toggleDeleteTagDialog} tagId={selectedTag?.id} tagName={selectedTag?.name} onTagDeleted={getTags}/>
     <Paper>
         <Button variant="contained" sx={{margin: 1}} onClick={toggleAddTagDialog}>Add tag</Button>

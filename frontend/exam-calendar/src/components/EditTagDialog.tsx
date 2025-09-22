@@ -2,13 +2,15 @@ import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextF
 import { useState } from "react";
 import api from "../api/axios";
 
-interface AddTagDialogProps {
+interface EditTagDialogProps {
     open: boolean;
     toggleDialog: () => void;
-    onTagAdded: () => void;
+    onTagEdited: () => void;
+    tagId?: number;
+    ogTagName?: string;
 }
 
-const AddTagDialog = ({open, toggleDialog, onTagAdded} : AddTagDialogProps) => {
+const EditTagDialog = ({open, toggleDialog, tagId, ogTagName, onTagEdited} : EditTagDialogProps) => {
 
     const TAG_NAME_REGEX = /^[a-zA-Z0-9._-]{2,40}$/;
     const TAG_NAME_ERROR_TEXT = "Tag name length must be within 2-40 alphanumeric and (-._) characters";
@@ -21,10 +23,10 @@ const AddTagDialog = ({open, toggleDialog, onTagAdded} : AddTagDialogProps) => {
         if (nameError) return;
         else {
             try {
-                await api.post('/tag', {name: tagName});
+                await api.patch('/tag', {id: tagId ,name: tagName});
                 setTagName("");
                 toggleDialog();
-                onTagAdded();
+                onTagEdited();
             }
             catch (error) {
                 console.error(error);
@@ -37,11 +39,11 @@ const AddTagDialog = ({open, toggleDialog, onTagAdded} : AddTagDialogProps) => {
     open={open}
     onClose={toggleDialog}>
         <DialogTitle>
-            Add new tag
+            Edit tag {ogTagName}
         </DialogTitle>
         <DialogContent>
         {nameError ? <Alert variant="filled" severity="error" sx={{textWrap: "wrap"}}>{nameError}</Alert> : null}
-        <form id="add-tag-form" onSubmit={handleSubmit}>
+        <form id="edit-tag-form" onSubmit={handleSubmit}>
             <TextField
             autoFocus
             required
@@ -55,11 +57,11 @@ const AddTagDialog = ({open, toggleDialog, onTagAdded} : AddTagDialogProps) => {
         </form>
         <DialogActions>
             <Button variant="contained" onClick={toggleDialog}>Cancel</Button>
-            <Button variant="contained" type="submit" form="add-tag-form">Add</Button>
+            <Button variant="contained" type="submit" form="edit-tag-form">Edit</Button>
         </DialogActions>
         </DialogContent>
     </Dialog>
     </>
 }
 
-export default AddTagDialog;
+export default EditTagDialog;
