@@ -1,5 +1,6 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { useState } from "react";
+import api from "../api/axios";
 
 interface AddTagDialogProps {
     open: boolean;
@@ -8,11 +9,26 @@ interface AddTagDialogProps {
 
 const AddTagDialog = ({open, toggleDialog} : AddTagDialogProps) => {
 
+    const TAG_NAME_REGEX = /^[a-zA-Z0-9._-]{2,40}$/;
+    const TAG_NAME_ERROR_TEXT = "Tag name length must be within 2-40 alphanumeric and (-._) characters";
+    const [nameError, setNameError] = useState<string>("");
     const [tagName,setTagName] = useState<string>("");
+   
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(`Given tag name: ${tagName}`);
+        setNameError(TAG_NAME_REGEX.test(tagName) ? "" : TAG_NAME_ERROR_TEXT);
+        console.log(tagName);
+        if (nameError) return;
+        else {
+            try {
+                await api.post('/tag', {name: tagName});
+                toggleDialog();
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
         
     };
 
@@ -24,12 +40,13 @@ const AddTagDialog = ({open, toggleDialog} : AddTagDialogProps) => {
             Add new tag
         </DialogTitle>
         <DialogContent>
+        {nameError ? <Alert variant="filled" severity="error" sx={{textWrap: "wrap"}}>{nameError}</Alert> : null}
         <form id="add-tag-form" onSubmit={handleSubmit}>
             <TextField
             autoFocus
             required
             value={tagName}
-            onChange={(e) => setTagName(e.target.value)}
+            onChange={(e) => {setTagName(e.target.value); setNameError("");}}
             label="Tag name"
             id="tag-name"
             fullWidth

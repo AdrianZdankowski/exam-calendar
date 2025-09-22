@@ -8,10 +8,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddTagDialog from "../components/AddTagDialog";
 
 const TagsPage = () => {
-
-    const [open, setOpen] = useState<boolean>(false);
-
-    const toggleDialog = () => setOpen(prev => !prev);
+    const [openAddTagDialog, setOpenTagDialog] = useState<boolean>(false);
+    const toggleAddTagDialog = () => setOpenTagDialog(prev => !prev);
 
     const handleEdit = (id: number) => {
         console.log("Edit tag ", id);
@@ -62,18 +60,22 @@ const TagsPage = () => {
         };
 
         getTags();
-    }, [])
+    }, []);
 
     return <>
     <Container maxWidth="sm">
     <h1>Tags</h1>
-    <AddTagDialog open={open} toggleDialog={toggleDialog}/>
+    <AddTagDialog open={openAddTagDialog} toggleDialog={toggleAddTagDialog}/>
     <Paper>
-        <Button variant="contained" sx={{margin: 1}} onClick={toggleDialog}>Add tag</Button>
+        <Button variant="contained" sx={{margin: 1}} onClick={toggleAddTagDialog}>Add tag</Button>
         <DataGrid
         rows={rows}
         columns={columns}
-        pageSizeOptions={[5,10,20]}/>
+        initialState={{
+            pagination: {
+                paginationModel: {pageSize: 5, page: 0}
+            }
+        }}/>
     </Paper>
     </Container>
     </>
