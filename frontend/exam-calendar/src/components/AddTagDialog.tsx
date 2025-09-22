@@ -5,16 +5,16 @@ import api from "../api/axios";
 interface AddTagDialogProps {
     open: boolean;
     toggleDialog: () => void;
+    onTagAdded: () => void;
 }
 
-const AddTagDialog = ({open, toggleDialog} : AddTagDialogProps) => {
+const AddTagDialog = ({open, toggleDialog, onTagAdded} : AddTagDialogProps) => {
 
     const TAG_NAME_REGEX = /^[a-zA-Z0-9._-]{2,40}$/;
     const TAG_NAME_ERROR_TEXT = "Tag name length must be within 2-40 alphanumeric and (-._) characters";
     const [nameError, setNameError] = useState<string>("");
     const [tagName,setTagName] = useState<string>("");
    
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setNameError(TAG_NAME_REGEX.test(tagName) ? "" : TAG_NAME_ERROR_TEXT);
@@ -23,13 +23,14 @@ const AddTagDialog = ({open, toggleDialog} : AddTagDialogProps) => {
         else {
             try {
                 await api.post('/tag', {name: tagName});
+                setTagName("");
                 toggleDialog();
+                onTagAdded();
             }
             catch (error) {
                 console.error(error);
             }
         }
-        
     };
 
     return <>
