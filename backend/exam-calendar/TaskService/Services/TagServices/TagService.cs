@@ -9,6 +9,11 @@ namespace TaskService.Services.TagServices
     {
         public async Task<bool> CreateTagAsync(TagPostDto tagPostDto, int userId)
         {
+            bool collidesWithGlobal = await context.Tags
+                .AnyAsync(t => (t.Id == 1 || t.Id == 2) 
+                    && t.Name == tagPostDto.Name);
+
+            if (collidesWithGlobal) return false;
 
             if (await context.Tags.AnyAsync(t => t.Name == tagPostDto.Name && t.UserId == userId))
             {
@@ -54,6 +59,14 @@ namespace TaskService.Services.TagServices
 
         public async Task<bool> UpdateTagAsync(TagDto tagDto, int userId)
         {
+            bool tagExists = await context.Tags.AnyAsync(t => t.UserId == userId && t.Name == tagDto.Name);
+
+            if (tagExists) return false;
+
+            bool collidesWithGlobal = await context.Tags.AnyAsync(t => (t.Id == 1 || t.Id == 2) && t.Name == tagDto.Name);
+
+            if (collidesWithGlobal) return false;
+
             var tag = await context.Tags.FirstOrDefaultAsync(t => t.Id == tagDto.Id && t.UserId == userId);
             if (tag is null) return false;
 
