@@ -1,23 +1,28 @@
-import { Box, Button, Checkbox, Container, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Paper, Select, TextareaAutosize, TextField, Typography, type SelectChangeEvent} from "@mui/material";
-import { useState, useEffect } from "react";
-import type { Tag } from "../types/types";
+import { useLocation, useNavigate, Navigate } from "react-router-dom";
+import type { Tag, Task } from "../types/types";
+import { useEffect, useState } from "react";
 import api from "../api/axios";
-import { useLocation, useNavigate} from "react-router-dom";
+import { Box, Button, Checkbox, Container, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Paper, Select, TextareaAutosize, TextField, Typography, type SelectChangeEvent } from "@mui/material";
 
 interface LocationState {
-    currentDate?: string
+    task: Task;
 }
 
-const AddTaskPage = () => {
+const EditTaskPage = () => {
 
     const {state} = useLocation() as {state?: LocationState};
+
+    if (!state?.task) {
+        return <Navigate to="/" replace/>
+    }
+
     const navigate = useNavigate();
 
-    const [selectedDate, setSelectedDate] = useState<string>(state?.currentDate || "");
-    const [tags, setTags] = useState<Tag[]>([]);
-    const [tagIds, setTagIds] = useState<number[]>([]);
-    const [taskTime, setTaskTime] = useState<string>("");
-    const [taskDescription, setTaskDescription] = useState<string>("");
+    const [selectedDate, setSelectedDate] = useState<string>(state?.task.taskDate ?? "");
+    const [tags, setTags] = useState<Tag[]>(state?.task.tags ?? []);
+    const [tagIds, setTagIds] = useState<number[]>(state?.task.tags.map(t => t.id) ?? []);
+    const [taskTime, setTaskTime] = useState<string>(state?.task.taskTime ?? "");
+    const [taskDescription, setTaskDescription] = useState<string>(state?.task.description ?? "");
 
     useEffect(() => {
         const getTags = async () => {
@@ -34,19 +39,23 @@ const AddTaskPage = () => {
     }, [])
 
     const handleSelectChange = (event: SelectChangeEvent<typeof tagIds>) => {
-        const value = event.target.value;
-        
-        const ids = typeof value === "string" 
-            ? value.split(",").map((v) => Number(v)) 
-            : value.map((v) => Number(v));
-
-        setTagIds(ids);
+            const value = event.target.value;
+            
+            const ids = typeof value === "string" 
+                ? value.split(",").map((v) => Number(v)) 
+                : value.map((v) => Number(v));
+    
+            setTagIds(ids);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
-        const payload = {
+        console.log(`Data: ${selectedDate}`);
+        console.log(`Task time: ${taskTime}`);
+        console.log(`Description: ${taskDescription}`);
+        console.log(`Tags: ${tagIds}`);
+
+         const payload = {
             taskDate: selectedDate,
             taskTime: taskTime || null,
             description: taskDescription,
@@ -54,17 +63,18 @@ const AddTaskPage = () => {
         };
 
         try {
-            const response = await api.post('/task',payload);
+            await api.put(`/task/${state?.task.id}`,payload);
             navigate('/', {
             replace: true
             })
-            console.log(`Response: ${response.data}`);
         }
         catch (error) {
             console.error(error);
         }
     };
+    
 
+    console.log(state?.task);
     return <Container maxWidth="sm" sx={{backgroundColor: "aqua", mt:4}}>
         <Paper elevation={8}>
             <Typography variant="h5" sx={{textAlign: "center"}}>Add new task</Typography>
@@ -78,7 +88,8 @@ const AddTaskPage = () => {
                 sx={{width: "10rem"}}/>
                 <TextField 
                 label="Task time" 
-                type="time" 
+                type="time"
+                value={taskTime} 
                 slotProps={{inputLabel: {shrink: true}}} 
                 sx={{width: "10rem", mt: "1rem"}}
                 onChange={(e) => setTaskTime(e.target.value)}/>
@@ -88,6 +99,7 @@ const AddTaskPage = () => {
                 placeholder="Task description"
                 required
                 onChange={(e) => setTaskDescription(e.target.value)}
+                value={taskDescription}
                 />
                 <FormControl sx={{width:"10rem", mt: "1rem"}}>
                     <InputLabel id="tags-label">Tags</InputLabel>
@@ -124,4 +136,4 @@ const AddTaskPage = () => {
     </Container>
 }
 
-export default AddTaskPage;
+export default EditTaskPage;

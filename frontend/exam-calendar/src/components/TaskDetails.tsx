@@ -20,6 +20,10 @@ const TaskDetails = ({date, tasks, onRemoveTask} : TaskDetailsProps) => {
         navigate('/addtask', {state: {currentDate: date}});
     };
 
+    const handleEditTaskButtonClick = (task: Task) => {
+        navigate('/edittask', {state: {task: task}})
+    };
+
     return<>
     <Typography variant="h5" sx={{color: "whitesmoke", ml: 1, mt: 1, mb:1}}>{`Tasks for ${date}`}</Typography>
     <Button onClick={handleAddTaskButtonClick} variant="contained" sx={{ml: 1, mb: 1}}>Add task</Button>
@@ -48,6 +52,7 @@ const TaskDetails = ({date, tasks, onRemoveTask} : TaskDetailsProps) => {
                     ))}
                     
                 </Box>
+                <Button variant="contained" onClick={() => handleEditTaskButtonClick(task)} sx={{mb: "1rem", mr: "0.5rem"}}>Edit</Button>
                 <DeleteTaskDialog onRemoveTask={onRemoveTask} date={date} taskId={task.id}/>
                 <Divider sx={{borderBlockColor: "whitesmoke"}}/>
             </Box>

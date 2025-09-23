@@ -10,6 +10,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import AddTaskPage from "./pages/AddTaskPage";
 import TagsPage from "./pages/TagsPage";
+import EditTaskPage from "./pages/EditTaskPage";
 
 function App() {
   return (
@@ -41,6 +42,11 @@ function App() {
             </ProtectedRoute>
           }
           />
+          <Route path="edittask" element = {
+            <ProtectedRoute>
+              <EditTaskPage/>
+            </ProtectedRoute>
+            }/>
           </Route>
         </Routes>
       </Router>
