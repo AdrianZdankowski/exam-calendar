@@ -50,12 +50,8 @@ const EditTaskPage = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(`Data: ${selectedDate}`);
-        console.log(`Task time: ${taskTime}`);
-        console.log(`Description: ${taskDescription}`);
-        console.log(`Tags: ${tagIds}`);
 
-         const payload = {
+        const payload = {
             taskDate: selectedDate,
             taskTime: taskTime || null,
             description: taskDescription,
@@ -73,11 +69,9 @@ const EditTaskPage = () => {
         }
     };
     
-
-    console.log(state?.task);
-    return <Container maxWidth="sm" sx={{backgroundColor: "aqua", mt:4}}>
-        <Paper elevation={8}>
-            <Typography variant="h5" sx={{textAlign: "center"}}>Add new task</Typography>
+    return <Container maxWidth="sm" sx={{height: "70vh", display: "flex", justifyContent: "center", alignItems: "center"}}>
+        <Paper elevation={8} sx={{width: "100%"}}>
+            <Typography variant="h5" sx={{textAlign: "center", mt: 2}}>Edit task</Typography>
             <Box component="form" onSubmit={handleSubmit} sx={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",mt:2}}>
                 <TextField 
                 required 

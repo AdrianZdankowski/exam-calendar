@@ -65,9 +65,9 @@ const AddTaskPage = () => {
         }
     };
 
-    return <Container maxWidth="sm" sx={{backgroundColor: "aqua", height:"100%"}}>
-        <Paper elevation={8}>
-            <Typography variant="h5" sx={{textAlign: "center"}}>Add new task</Typography>
+    return <Container maxWidth="sm" sx={{height: "70vh", display: "flex", justifyContent: "center", alignItems: "center"}}>
+        <Paper elevation={8} sx={{width: "100%"}}>
+            <Typography variant="h5" sx={{textAlign: "center", mt: 2}}>Add new task</Typography>
             <Box component="form" onSubmit={handleSubmit} sx={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",mt:2}}>
                 <TextField 
                 required 
