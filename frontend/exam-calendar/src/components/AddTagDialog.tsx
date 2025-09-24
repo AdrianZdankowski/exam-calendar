@@ -1,6 +1,7 @@
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, ThemeProvider } from "@mui/material";
 import { useState } from "react";
 import api from "../api/axios";
+import TextFieldTheme from "../themes/TextFieldTheme";
 
 interface AddTagDialogProps {
     open: boolean;
@@ -42,16 +43,18 @@ const AddTagDialog = ({open, toggleDialog, onTagAdded} : AddTagDialogProps) => {
         <DialogContent>
         {nameError ? <Alert variant="filled" severity="error" sx={{textWrap: "wrap"}}>{nameError}</Alert> : null}
         <form id="add-tag-form" onSubmit={handleSubmit}>
-            <TextField
-            autoFocus
-            required
-            value={tagName}
-            onChange={(e) => {setTagName(e.target.value); setNameError("");}}
-            label="Tag name"
-            id="tag-name"
-            fullWidth
-            variant="standard"
-            />
+            <ThemeProvider theme={TextFieldTheme}>
+                <TextField
+                autoFocus
+                required
+                value={tagName}
+                onChange={(e) => {setTagName(e.target.value); setNameError("");}}
+                label="Tag name"
+                id="tag-name"
+                fullWidth
+                variant="standard"
+                />
+            </ThemeProvider>
         </form>
         <DialogActions>
             <Button variant="contained" onClick={toggleDialog}>Cancel</Button>

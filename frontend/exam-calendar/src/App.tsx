@@ -11,9 +11,12 @@ import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
 import AddTaskPage from "./pages/AddTaskPage";
 import TagsPage from "./pages/TagsPage";
 import EditTaskPage from "./pages/EditTaskPage";
+import { ThemeProvider } from "@mui/material/styles";
+import DialogTheme from "./themes/DialogTheme";
 
 function App() {
   return (
+    <ThemeProvider theme={DialogTheme}>
     <AuthProvider>
       <Router>
         <Routes>
@@ -51,6 +54,7 @@ function App() {
         </Routes>
       </Router>
     </AuthProvider>
+    </ThemeProvider>
   );
 }
 

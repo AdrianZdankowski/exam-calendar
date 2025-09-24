@@ -135,7 +135,7 @@ const Calendar = () => {
                         }}>
 
                         {calendarDays.map((day, i) => {
-                            if (!day) return <Box key={i} />;
+                            if (!day) return <Box key={i} />
 
                             const dayTasks = tasks[day] || [];
                             const taskCount = dayTasks.length;
@@ -150,7 +150,7 @@ const Calendar = () => {
                                     onSelectDay={handleCalendarCardClick}
                                 />
                             );
-                        })};
+                        })}
                     </Box>
                 </Box>
                 <Box
