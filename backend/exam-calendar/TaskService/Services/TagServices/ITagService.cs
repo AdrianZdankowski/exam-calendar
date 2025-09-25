@@ -9,5 +9,9 @@ namespace TaskService.Services.TagServices
         Task<List<TagDto>> GetAllTagsAsync(int userId);
 
         Task<TagDto> GetTagAsync(int id, int userId);
+
+        Task<bool> DeleteTagAsync(int id, int userId);
+
+        Task<bool> UpdateTagAsync(TagDto tagDto, int userId);
     }
 }

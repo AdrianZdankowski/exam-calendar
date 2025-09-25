@@ -1,0 +1,55 @@
+import { Card, Typography, Box, Chip } from "@mui/material";
+import type { Tag } from "../types/types";
+
+interface CalendarCardProps {
+    dayNumber: number;
+    taskCount?: number;
+    tags?: Tag[];
+    onSelectDay?: (day: number) => void;
+}
+
+const CalendarCard = ({dayNumber, taskCount, tags, onSelectDay} : CalendarCardProps) => {
+    return (
+        <Card
+        onClick={() => onSelectDay?.(dayNumber)}
+        sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            alignItems: "center",
+            height: "100%", 
+            width: "100%",
+            padding: 0.5, 
+            margin: 0, 
+            backgroundColor: "#2d3748", 
+            color: "whitesmoke",
+            cursor: "pointer",
+            }}>
+                <Typography>{dayNumber}</Typography>
+                {!!taskCount ? <Chip size="small" label={taskCount} sx={{color: "whitesmoke"}}/> : null}
+                
+                <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexFlow: "wrap",
+                    gap: "0.25rem",
+                    mb: "0.25rem"
+                }}>
+                   {tags?.length ? (
+                    tags.slice(0,3).map((tag, index) => (
+                        <Chip
+                            key={`${tag.name}${tag.id - index}`}
+                            size="small"
+                            label={tag.name}
+                            sx={{color: "whitesmoke"}}
+                        />
+                    ))
+                   ): null}
+                </Box>
+        </Card>
+    )
+}
+
+export default CalendarCard;

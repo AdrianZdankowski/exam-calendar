@@ -42,7 +42,7 @@ namespace TaskService.Data
             var task1 = new TaskItem
             {
                 UserId = 1,
-                TaskDate = new DateOnly(2025, 8, 17),
+                TaskDate = new DateOnly(2025, 9, 17),
                 TaskTime = new TimeOnly(17,30),
                 Description = "Test task number 1",
                 Tags = new List<Tag> { tag2 }
@@ -51,7 +51,7 @@ namespace TaskService.Data
             var task2 = new TaskItem
             {
                 UserId = 2,
-                TaskDate = new DateOnly(2025, 8, 17),
+                TaskDate = new DateOnly(2025, 9, 17),
                 TaskTime = new TimeOnly(18, 30),
                 Description = "Test task number 2",
                 Tags = new List<Tag> { tag1 }

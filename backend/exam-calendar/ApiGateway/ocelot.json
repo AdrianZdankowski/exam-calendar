@@ -28,7 +28,7 @@
     },
     {
       "UpstreamPathTemplate": "/api/tag/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
 
       "DownstreamPathTemplate": "/api/tag/{everything}",
       "DownstreamScheme": "http",

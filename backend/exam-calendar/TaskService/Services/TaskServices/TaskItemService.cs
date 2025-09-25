@@ -24,7 +24,7 @@ namespace TaskService.Services.TaskServices
 
             var task = new TaskItem
             {
-                UserId = taskPostDto.UserId,
+                UserId = userId,
                 TaskDate = taskPostDto.TaskDate,
                 TaskTime = taskPostDto.TaskTime,
                 Description = taskPostDto.Description,
@@ -59,7 +59,6 @@ namespace TaskService.Services.TaskServices
                 var taskDtos = tasks.Select(task => new TaskDto
                 {
                     Id = task.Id,
-                    UserId = task.UserId,
                     TaskDate = task.TaskDate,
                     TaskTime = task.TaskTime,
                     Description = task.Description,
@@ -89,7 +88,6 @@ namespace TaskService.Services.TaskServices
                 var taskDtos = tasks.Select(task => new TaskDto
                 {
                     Id = task.Id,
-                    UserId = task.UserId,
                     TaskDate = task.TaskDate,
                     TaskTime = task.TaskTime,
                     Description = task.Description,
@@ -116,7 +114,6 @@ namespace TaskService.Services.TaskServices
             var taskDto = new TaskDto
             {
                 Id = task.Id,
-                UserId = task.UserId,
                 TaskDate = task.TaskDate,
                 TaskTime = task.TaskTime,
                 Description = task.Description,
@@ -128,6 +125,33 @@ namespace TaskService.Services.TaskServices
             };
 
             return taskDto;
+        }
+
+        public async Task<bool> UpdateTaskAsync(TaskPostDto taskDto, int id, int userId)
+        {
+            var task = await context.Tasks.Include(t => t.Tags).FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
+            if (task is null) return false;
+
+            var tags = new List<Tag>();
+
+            if (taskDto.TagIds.Any())
+            {
+
+                tags = await context.Tags
+                    .Where(t => taskDto.TagIds.Contains(t.Id) && (t.UserId == userId || t.UserId == null))
+                    .ToListAsync();
+
+                if (tags.Count != taskDto.TagIds.Count) return false;
+            }
+
+            task.TaskDate = taskDto.TaskDate;
+            task.TaskTime = taskDto.TaskTime;
+            task.Description = taskDto.Description;
+            task.Tags = tags;
+
+            await context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

@@ -5,7 +5,7 @@ import api from "../api/axios";
 
 const Header = () => {
 
-  const {isAuthenticated, logout} = useAuth();
+  const {isAuthenticated, userRole, logout} = useAuth();
 
   const navigate = useNavigate();
 
@@ -19,6 +19,7 @@ const Header = () => {
       }
     } 
     catch (error) {
+      logout();
       console.error(error);
     }
     
@@ -33,8 +34,9 @@ const Header = () => {
         :
         <p><Link className="clean-link" to="/login">Login</Link></p>
       }
-        <p><Link className="clean-link" to="/users">Users</Link></p>
-        <p>Manage calendar</p>
+        {userRole === 'Admin' ? <p><Link className="clean-link" to="/users">Users</Link></p> : null}
+        {isAuthenticated ? <p><Link className="clean-link" to="/tags">Tags</Link></p> : null}
+        
       </nav>
       
       
