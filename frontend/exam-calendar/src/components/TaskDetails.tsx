@@ -34,18 +34,25 @@ const TaskDetails = ({date, tasks, onRemoveTask} : TaskDetailsProps) => {
                 <Tooltip title="Task time" arrow>
                     <AccessTimeIcon/>
                 </Tooltip>
+                <Typography>Time:</Typography>
                 <Typography>{task.taskTime ? task.taskTime.slice(0,5) : "--:--"}</Typography>
             </Box>
             <Box sx={{ml: 1, mt: 1}}>
-                <Tooltip title="Task description" arrow>
-                    <DescriptionIcon/>
-                </Tooltip>
+                <Box sx={{display: "flex", gap: 1, mb: 1}}>
+                    <Tooltip title="Task description" arrow>
+                        <DescriptionIcon/>
+                    </Tooltip>
+                    <Typography>Description:</Typography>
+                </Box>
                 <Typography>{task.description}</Typography>
             </Box>
             <Box sx={{ml: 1, mt: 1}}>
-                <Tooltip title="Task tags" arrow>
-                    <LabelOutlinedIcon/>
-                </Tooltip>
+                <Box sx={{display: "flex", gap: 1, mb: 1}}>
+                    <Tooltip title="Task tags" arrow>
+                        <LabelOutlinedIcon/>
+                    </Tooltip>
+                    <Typography>Tags:</Typography>
+                </Box>
                 <Box sx={{display: "flex", gap: 1, mb: 2}}>
                     {task.tags.map((t, index) => (
                         <Chip key={`${t.name}${t.id -index}`} size="small" label={t.name} sx={{color: "whitesmoke", backgroundColor: "gray"}}/>
