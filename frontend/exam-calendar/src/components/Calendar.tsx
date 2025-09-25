@@ -5,6 +5,8 @@ import type { Task } from "../types/types";
 import api from "../api/axios";
 import TaskDetails from "./TaskDetails";
 import type { AxiosError } from "axios";
+import { ThemeProvider } from "@mui/material/styles";
+import SelectMenuTheme from "../themes/SelectMenuTheme";
 
 interface TasksByDay {
     [day: string]: Task[];
@@ -99,14 +101,16 @@ const Calendar = () => {
                         flexDirection: "column"
                     }}>
                     <FormControl sx={{ display: "flex", placeItems: "center" }}>
+                        <ThemeProvider theme={SelectMenuTheme}>
                         <Select
-                            sx={{ width: "10rem", color: "whitesmoke" }}
+                            sx={{ width: "10rem", color: "whitesmoke", backgroundColor: "#2d3748"}}
                             value={Number(selectedMonth)}
                             onChange={(e) => setSelectedMonth(Number(e.target.value))}>
                             {monthNames.map((m, i) => (
                                 <MenuItem key={i} value={i}>{m}</MenuItem>
                             ))}
                         </Select>
+                        </ThemeProvider>
                     </FormControl>
                     <Box sx={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)" }}>
                         {daysOfWeek.map((day) => (
@@ -114,6 +118,7 @@ const Calendar = () => {
                                 key={day}
                                 sx={{
                                     textAlign: "center",
+                                    fontFamily: "Roboto",
                                     fontWeight: "bold",
                                     color: "whitesmoke"
                                 }}>

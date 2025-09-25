@@ -26,36 +26,35 @@ const RegisterPage = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setRegisterError('');
-        
 
-       const usernameErr = USERNAME_REGEX.test(username) ? '' : USERNAME_ERROR_TEXT;
-       const passwordErr = PASSWORD_REGEX.test(password) ? '' : PASSWORD_ERROR_TEXT;
-       const repeatPasswordErr = password === repeatPassword ? '' : REPEAT_PASSWORD_ERROR_TEXT;
+        const usernameErr = USERNAME_REGEX.test(username) ? '' : USERNAME_ERROR_TEXT;
+        const passwordErr = PASSWORD_REGEX.test(password) ? '' : PASSWORD_ERROR_TEXT;
+        const repeatPasswordErr = password === repeatPassword ? '' : REPEAT_PASSWORD_ERROR_TEXT;
 
-       setUsernameError(usernameErr);
-       setPasswordError(passwordErr);
-       setRepeatPasswordError(repeatPasswordErr);
+        setUsernameError(usernameErr);
+        setPasswordError(passwordErr);
+        setRepeatPasswordError(repeatPasswordErr);
 
-       if (usernameErr.length != 0 || passwordErr.length != 0 || repeatPasswordErr.length != 0) return;
+        if (usernameErr.length != 0 || passwordErr.length != 0 || repeatPasswordErr.length != 0) return;
 
-       try {
-        await api.post('/auth/register', {username, password});
-        navigate('/login', {
-            replace: true,
-            state: {
-                registered: true,
-            }
+        try {
+            await api.post('/auth/register', {username, password});
+            navigate('/login', {
+                replace: true,
+                state: {
+                    registered: true,
+                }
             });
-       }
-       catch (error: any) {
-        console.error(error);
-        if (error.response?.status === 400) {
-            setRegisterError("User with given name already exists!");
         }
-        else {
-            setRegisterError("There was an error during registration. Try again.");
+        catch (error: any) {
+            console.error(error);
+            if (error.response?.status === 400) {
+                setRegisterError("User with given name already exists!");
+            }
+            else {
+                setRegisterError("There was an error during registration. Try again.");
+            }
         }
-       }
     };
 
     return (
