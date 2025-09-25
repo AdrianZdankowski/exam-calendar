@@ -74,12 +74,11 @@ const TagsPage = () => {
     }, []);
 
     return <>
-    <Container maxWidth="sm">
-    <h1>Tags</h1>
+    <Container maxWidth="sm" sx={{height: "70vh", display: "flex", justifyContent: "center", alignItems: "center"}}>
     <AddTagDialog open={openAddTagDialog} toggleDialog={toggleAddTagDialog} onTagAdded={getTags}/>
     <EditTagDialog open={openEditTagDialog} toggleDialog={toggleEditTagDialog} onTagEdited={getTags} tagId={selectedTag?.id} ogTagName={selectedTag?.name}/>
     <DeleteTagDialog open={openDeleteTagDialog} toggleDialog={toggleDeleteTagDialog} tagId={selectedTag?.id} tagName={selectedTag?.name} onTagDeleted={getTags}/>
-    <Paper>
+    <Paper sx={{width: "100%"}}>
         <Button variant="contained" sx={{margin: 1}} onClick={toggleAddTagDialog}>Add tag</Button>
         <DataGrid
         rows={rows}
