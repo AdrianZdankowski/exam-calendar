@@ -15,7 +15,6 @@ const LoginPage = () => {
 
     const USERNAME_ERROR_TEXT = "Username must contain 3-32 letters, numbers, hyphens, dots and underscores";
     const PASSWORD_ERROR_TEXT = "Password has to be at least 8 character long, contain a number and a special character";
-    const LOGIN_ERROR_TEXT = "Wrong username or password given!";
     const REGISTER_SUCCESS = "Account created! Sign in below.";
 
     const { state } = useLocation() as { state?: LocationState };
@@ -35,13 +34,15 @@ const LoginPage = () => {
 
     const [username,setUsername] = useState('');
     const [password,setPassword] = useState('');
-    const [loginFailed, setLoginFailed] = useState(false);
+    
+    const [loginError, setLoginError] = useState('');
 
     const [usernameError,setUsernameError] = useState('');
     const [passwordError,setPasswordError] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoginError('');
 
        const usernameErr = USERNAME_REGEX.test(username) ? '' : USERNAME_ERROR_TEXT;
        const passwordErr = PASSWORD_REGEX.test(password) ? '' : PASSWORD_ERROR_TEXT;
@@ -50,7 +51,7 @@ const LoginPage = () => {
        setPasswordError(passwordErr);
 
        if (usernameErr.length != 0 || passwordErr.length != 0) {
-        setLoginFailed(true);
+        
         return;
        }
 
@@ -62,8 +63,15 @@ const LoginPage = () => {
             replace: true
         })
        } 
-       catch (error) {
+       catch (error: any) {
         console.error(error);
+
+        if (error.response?.status === 400) {
+            setLoginError("User with given credentials does not exist!");
+        }
+        else {
+            setLoginError("There was an error while signing in. Try again.")
+        }
        }
     }
 
@@ -81,7 +89,7 @@ const LoginPage = () => {
             <Typography component="h1" variant="h5" align="center">
                 Sign in
             </Typography>
-            {loginFailed && <Alert variant="filled" severity="error">{LOGIN_ERROR_TEXT}</Alert>}
+            {loginError && <Alert variant="filled" severity="error">{loginError}</Alert>}
             <Box component="form" onSubmit={handleSubmit} sx={{mt: 2}}>
                 <TextField 
                 fullWidth
@@ -89,7 +97,7 @@ const LoginPage = () => {
                 label="Username"
                 type="text"
                 value={username} 
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => {setUsername(e.target.value); setUsernameError('');}}
                 placeholder="Enter username" 
                 error={!!usernameError}
                 helperText={usernameError}
@@ -110,7 +118,7 @@ const LoginPage = () => {
                 label="Password"
                 type="password"
                 value={password} 
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {setPassword(e.target.value); setPasswordError('');}}
                 placeholder="Enter password" 
                 error={!!passwordError}
                 helperText={passwordError}

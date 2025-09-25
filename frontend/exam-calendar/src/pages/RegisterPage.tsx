@@ -1,4 +1,4 @@
-import { Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from '../api/axios';
@@ -19,11 +19,14 @@ const RegisterPage = () => {
     const [usernameError,setUsernameError] = useState('');
     const [passwordError,setPasswordError] = useState('');
     const [repeatPasswordError,setRepeatPasswordError] = useState('');
+    const [registerError, setRegisterError] = useState('');
 
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setRegisterError('');
+        
 
        const usernameErr = USERNAME_REGEX.test(username) ? '' : USERNAME_ERROR_TEXT;
        const passwordErr = PASSWORD_REGEX.test(password) ? '' : PASSWORD_ERROR_TEXT;
@@ -44,14 +47,23 @@ const RegisterPage = () => {
             }
             });
        }
-       catch (error) {
+       catch (error: any) {
         console.error(error);
+        if (error.response?.status === 400) {
+            setRegisterError("User with given name already exists!");
+        }
+        else {
+            setRegisterError("There was an error during registration. Try again.");
+        }
        }
     };
 
     return (
         <Container maxWidth="xs" sx={{ marginTop: 10 }}>
         <Paper elevation={10} sx={{ marginTop: 8, padding: 2, backgroundColor: "hsla(220, 35%, 3%, 0.4)", color:'whitesmoke' }}>
+            {registerError && 
+            <Alert variant="filled" severity="error">{registerError}</Alert>}
+
             <Typography component="h1" variant="h5" align="center">
                 Sign up
             </Typography>
@@ -61,7 +73,7 @@ const RegisterPage = () => {
                 label="Username"
                 type="text"
                 value={username} 
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => {setUsername(e.target.value); setUsernameError('');}}
                 placeholder="Enter username" 
                 error={!!usernameError}
                 helperText={usernameError}
@@ -82,7 +94,7 @@ const RegisterPage = () => {
                 label="Password"
                 type="password"
                 value={password} 
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {setPassword(e.target.value); setPasswordError('');}}
                 placeholder="Enter password" 
                 error={!!passwordError}
                 helperText={passwordError}
@@ -103,7 +115,7 @@ const RegisterPage = () => {
                 label="Repeat password"
                 type="password"
                 value={repeatPassword} 
-                onChange={(e) => setRepeatPassword(e.target.value)}
+                onChange={(e) => {setRepeatPassword(e.target.value); setRepeatPasswordError('')}}
                 placeholder="Repeat password" 
                 error={!!repeatPasswordError}
                 helperText={repeatPasswordError}
